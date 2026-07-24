@@ -1,0 +1,181 @@
+** ANSIBLE – BASIC COMMANDS **
+
+# Check Ansible version
+ansible --version
+
+# Display Ansible configuration
+ansible-config view
+
+# Test connectivity to hosts (ping module)
+ansible all -m ping
+
+# Test connectivity to a specific host
+ansible webserver -m ping
+
+# Run ad-hoc command on all hosts
+ansible all -a "uptime"
+
+# Run ad-hoc command on specific host
+ansible webserver -a "uptime"
+
+# Run command with become (sudo)
+ansible all -a "apt update" -b
+
+# List all hosts in inventory
+ansible all --list-hosts
+
+
+** ANSIBLE – INVENTORY **
+
+# Specify inventory file for command
+ansible all -i inventory.ini -m ping
+
+# Dynamic inventory example (script or cloud)
+ansible-inventory -i my_inventory_script.py --list
+
+# List all groups and hosts in inventory
+ansible-inventory -i inventory.ini --graph
+
+# Dump inventory as JSON
+ansible-inventory -i inventory.ini --list
+
+
+** ANSIBLE – PLAYBOOKS **
+
+# Run playbook
+ansible-playbook site.yml
+
+# Run playbook with specific inventory
+ansible-playbook -i inventory.ini site.yml
+
+# Run playbook with tags
+ansible-playbook site.yml --tags "install"
+
+# Run playbook skipping tags
+ansible-playbook site.yml --skip-tags "remove"
+
+# Run playbook in check (dry run) mode
+ansible-playbook site.yml --check
+
+# Run playbook with verbose output
+ansible-playbook site.yml -v
+
+# Run playbook with more verbose output
+ansible-playbook site.yml -vv
+
+# Run playbook and become sudo automatically
+ansible-playbook site.yml -b
+
+# Limit playbook run to specific host/group
+ansible-playbook site.yml --limit webservers
+
+
+** ANSIBLE – MODULES **
+
+# Gather facts about hosts
+ansible all -m setup
+
+# Install package using apt
+ansible all -m apt -a "name=nginx state=present" -b
+
+# Install package using yum
+ansible all -m yum -a "name=httpd state=latest" -b
+
+# Copy file to remote host
+ansible all -m copy -a "src=/local/file dest=/remote/file" -b
+
+# Fetch file from remote host
+ansible all -m fetch -a "src=/remote/file dest=./local/flat=yes"
+
+# Create a directory
+ansible all -m file -a "path=/tmp/test state=directory mode=0755"
+
+# Remove a file or directory
+ansible all -m file -a "path=/tmp/test state=absent"
+
+# Template a file using Jinja2
+ansible all -m template -a "src=template.j2 dest=/etc/app/config.cfg"
+
+# Restart service
+ansible all -m service -a "name=nginx state=restarted" -b
+
+# Start service
+ansible all -m service -a "name=nginx state=started" -b
+
+# Stop service
+ansible all -m service -a "name=nginx state=stopped" -b
+
+# Enable service on boot
+ansible all -m service -a "name=nginx enabled=yes" -b
+
+# Disable service on boot
+ansible all -m service -a "name=nginx enabled=no" -b
+
+
+** ANSIBLE – ROLES & GALAXY **
+
+# Create a new role
+ansible-galaxy init myrole
+
+# Install role from Ansible Galaxy
+ansible-galaxy install geerlingguy.nginx
+
+# List installed roles
+ansible-galaxy list
+
+# Remove role
+ansible-galaxy remove geerlingguy.nginx
+
+
+** ANSIBLE – VAULT / SECRETS **
+
+# Encrypt file with Ansible Vault
+ansible-vault encrypt secrets.yml
+
+# Decrypt file with Ansible Vault
+ansible-vault decrypt secrets.yml
+
+# Edit file with Ansible Vault
+ansible-vault edit secrets.yml
+
+# Run playbook using Vault password file
+ansible-playbook site.yml --vault-password-file ~/.vault_pass.txt
+
+# Prompt for Vault password during playbook run
+ansible-playbook site.yml --ask-vault-pass
+
+
+** ANSIBLE – DEBUGGING & VERBOSE **
+
+# Run command with verbose output
+ansible all -a "uptime" -v
+
+# Run playbook with verbose output
+ansible-playbook site.yml -v
+
+# Run playbook with increased verbosity
+ansible-playbook site.yml -vv
+
+# Maximum verbosity for debugging
+ansible-playbook site.yml -vvv
+
+# Print debug message inside playbook
+debug: msg="Variable value is {{ myvar }}"
+
+
+** ANSIBLE – TIPS / USAGE **
+
+# Limit execution to a host or group
+ansible-playbook site.yml --limit webservers
+
+# Check syntax of a playbook
+ansible-playbook site.yml --syntax-check
+
+# Show variables for host
+ansible all -m setup
+
+# List facts for a single host
+ansible webserver -m setup
+
+# Run multiple ad-hoc commands sequentially
+ansible all -a "uptime; who"

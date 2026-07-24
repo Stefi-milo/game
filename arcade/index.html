@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Home Arcade</title>
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+body{
+  background:#0d1117;
+  color:#e0e0e0;
+  font-family:'Courier New', monospace;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:20px 10px 10px;
+}
+
+header h1{
+  color:#ff6b35;
+  letter-spacing:4px;
+  font-size:3rem;
+}
+
+#current-player{
+  margin:18px auto 0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  padding:18px 34px;
+  border-radius:16px;
+  width:fit-content;
+  background:#161b27;
+  border:2px solid white;
+  font-size:2rem;
+  font-weight:bold;
+  color:#f0a500;
+  box-shadow:0 0 18px rgba(255,107,53,0.25);
+}
+
+#change-player-wrap{
+  display:none;
+  justify-content:center;
+  margin-top:14px;
+}
+
+#change-player-wrap button{
+  background:#2a2f3d;
+  color:#aaa;
+  border:1px solid #3a3f50;
+  padding:8px 22px;
+  border-radius:10px;
+  cursor:pointer;
+  font-family:'Courier New', monospace;
+  font-size:0.9rem;
+  letter-spacing:1px;
+  transition:0.15s;
+}
+
+#change-player-wrap button:hover{
+  background:#ff6b35;
+  color:#fff;
+  border-color:#ff6b35;
+}
+
+/* LOGIN */
+#player-screen{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:80vh;
+  padding:20px;
+  gap:20px;
+}
+
+#name-input-box{
+  background:#161b27;
+  padding:36px;
+  border-radius:14px;
+  width:100%;
+  max-width:520px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+#name-input-box h3{
+  color:#aaa;
+  font-size:0.9rem;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+input{
+  background:#0d1117;
+  border:1px solid #2a2f3d;
+  color:#e0e0e0;
+  padding:14px 16px;
+  border-radius:8px;
+  font-size:1.2rem;
+  font-family:'Courier New', monospace;
+}
+
+/* AVATARS */
+.avatar-picker{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.av-option{
+  text-align:center;
+  padding:12px 8px;
+  border-radius:10px;
+  cursor:pointer;
+  border:2px solid transparent;
+  font-size:2rem;
+  background:#0d1117;
+  transition:0.15s;
+}
+
+.av-option:hover{
+  border-color:#555;
+}
+
+.av-option.selected{
+  border-color:#ff6b35;
+  background:#1e1208;
+}
+
+#btn-enter{
+  background:#f0c000;
+  color:#000;
+  border:none;
+  padding:16px;
+  border-radius:10px;
+  cursor:pointer;
+  font-family:'Courier New', monospace;
+  font-size:1.3rem;
+  font-weight:bold;
+  letter-spacing:2px;
+  transition:0.15s;
+}
+
+#btn-enter:hover{
+  background:#ffd700;
+}
+
+/* GAME SCREEN */
+#game-screen{
+  display:none;
+  padding:20px;
+}
+
+.section-title{
+  margin:34px 0 10px;
+  color:#ffcc00;
+  text-align:center;
+  font-size:2rem;
+}
+
+.games-grid{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  align-items:flex-start;
+  gap:18px;
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+}
+
+/* GAME CARD */
+.game-card{
+  background:#161b27;
+  padding:24px 18px;
+  border-radius:14px;
+  text-align:center;
+  cursor:pointer;
+  width:180px;
+  min-height:122px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  transition:0.2s;
+}
+
+.game-card:hover{
+  transform:translateY(-4px);
+  border:1px solid #ff6b35;
+}
+
+.game-icon{
+  font-size:2.3rem;
+}
+
+.game-title{
+  margin-top:10px;
+  color:#f0a500;
+  font-size:1.1rem;
+}
+
+/* EMULATOR */
+#emulator-screen{
+  display:none;
+  flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+
+#emulator-frame{
+  flex:1;
+  overflow:hidden;
+  min-height:0;
+}
+
+#emulator-frame iframe{
+  width:100%;
+  height:100%;
+  border:none;
+  display:block;
+}
+
+.bottom-btn{
+  text-align:center;
+  padding:10px 20px;
+  flex-shrink:0;
+  background:#0d1117;
+  display:none;
+}
+
+.bottom-btn button{
+  font-size:1.2rem;
+  padding:12px 40px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  background:#ff6b35;
+  color:#fff;
+  font-family:'Courier New', monospace;
+  font-weight:bold;
+}
+
+/* Mobile */
+@media(max-width:480px){
+  header h1{ font-size:2rem; }
+  #current-player{ font-size:1.3rem; padding:14px 22px; }
+  .av-option{ font-size:1.5rem; padding:8px 4px; }
+  .game-card{ width:140px; min-height:110px; padding:16px 10px; }
+  .section-title{ font-size:1.5rem; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🕹️ HOME ARCADE</h1>
+  <div id="current-player"></div>
+  <div id="change-player-wrap">
+    <button onclick="changePlayer()">CHANGE PLAYER</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<div id="player-screen">
+  <p style="color:#aaa;font-size:0.95rem;text-align:center;letter-spacing:1px;margin-top:-10px;">
+    The purpose of the game is to practise IT commands.
+  </p>
+  <h2>SELECT PLAYER</h2>
+  <div id="name-input-box">
+    <input id="name-input" placeholder="Enter your name"/>
+    <h3>Choose your avatar</h3>
+    <div id="avatar-picker" class="avatar-picker"></div>
+    <button id="btn-enter">ENTER ARCADE ▶</button>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game-screen">
+  <div class="section-title">🎮 FUN</div>
+  <p style="color:#aaa;font-size:0.9rem;text-align:center;margin:-4px 0 18px;letter-spacing:1px;">
+    Play these games just for fun.
+  </p>
+  <div class="games-grid" id="fun-grid"></div>
+
+  <div class="section-title">📚 STUDY</div>
+  <p style="color:#aaa;font-size:0.9rem;text-align:center;margin:-4px 0 18px;letter-spacing:1px;">
+    Choose the topic and jump in to practise commands.
+  </p>
+  <div class="games-grid" id="study-grid"></div>
+</div>
+
+<!-- EMULATOR -->
+<div id="emulator-screen">
+  <div id="emulator-frame"></div>
+  <div class="bottom-btn">
+    <button onclick="backToGames()">◀ BACK</button>
+  </div>
+</div>
+
+<script>
+const AVATARS=[
+  {icon:'🖥️'},{icon:'👾'},{icon:'🤖'},{icon:'🥷'},
+  {icon:'🧙'},{icon:'👨‍🚀'},{icon:'🐱'},{icon:'👽'},
+  {icon:'🦊'},{icon:'🐸'},{icon:'🦁'},{icon:'🐼'},
+  {icon:'🧟'},{icon:'🎃'},{icon:'🦸'},{icon:'🧑‍💻'}
+];
+
+const GAMES=[
+  {id:'minesweeper',          title:'Minesweeper',      icon:'💣'},
+  {id:'chess',                title:'Chess',            icon:'♟️'},
+  {id:'pexeso',               title:'Pexeso',           icon:'🎴'},
+  {id:'kubernetesmatch',      title:'Kubernetes',       icon:'⚙️'},
+  {id:'linuxmatch',           title:'Linux',            icon:'🐧'},
+  {id:'ansiblematch',         title:'Ansible',          icon:'🅰'},
+  {id:'gitmatch',             title:'Git',              icon:'🔀'},
+  {id:'helmmatch',            title:'Helm',             icon:'⛵'},
+  {id:'terraformmatch',       title:'Terraform',        icon:'🟪'},
+  {id:'dockermatch',          title:'Docker',           icon:'🐳'},
+  {id:'proxmoxmatch',         title:'Proxmox',          icon:'🟧'},
+  {id:'nodejsmatch',          title:'NodeJS',           icon:'🟩'},
+  {id:'mysqlmatch',           title:'MySQL',            icon:'🐬'},
+  {id:'postgresqlmatch',      title:'PostgreSQL',       icon:'🐘'},
+  {id:'regexmatch',           title:'Regex',            icon:'(.*)'},
+  {id:'curlmatch',            title:'Curl',             icon:'🌐'},
+  {id:'webservermatch',       title:'Webserver',        icon:'🪶'},
+  {id:'troubleshootingmatch', title:'Networking',       icon:'🔧'}
+];
+
+const FUN_IDS=['minesweeper','chess','pexeso'];
+let selectedAvatar=AVATARS[0];
+let currentPlayer=null;
+
+/* AVATAR PICKER */
+const picker=document.getElementById('avatar-picker');
+AVATARS.forEach((a,i)=>{
+  const d=document.createElement('div');
+  d.className='av-option'+(i===0?' selected':'');
+  d.innerHTML=a.icon;
+  d.onclick=()=>{
+    document.querySelectorAll('.av-option').forEach(x=>x.classList.remove('selected'));
+    d.classList.add('selected');
+    selectedAvatar=a;
+  };
+  picker.appendChild(d);
+});
+
+/* ENTER */
+document.getElementById('btn-enter').onclick=()=>{
+  const name=document.getElementById('name-input').value.trim();
+  if(!name){ alert("Enter name"); return; }
+  const player={name, icon:selectedAvatar.icon};
+  localStorage.setItem('arcade_player', JSON.stringify(player));
+  enterArcade(player);
+};
+
+/* AUTO LOGIN */
+const saved=localStorage.getItem('arcade_player');
+if(saved){
+  try{
+    const player=JSON.parse(saved);
+    document.getElementById('name-input').value=player.name;
+    const match=AVATARS.findIndex(a=>a.icon===player.icon);
+    if(match>=0){
+      document.querySelectorAll('.av-option').forEach((x,i)=>x.classList.toggle('selected',i===match));
+      selectedAvatar=AVATARS[match];
+    }
+    enterArcade(player);
+  }catch(e){}
+}
+
+function enterArcade(player){
+  currentPlayer=player;
+  document.getElementById('player-screen').style.display='none';
+  document.getElementById('game-screen').style.display='block';
+  const cp=document.getElementById('current-player');
+  cp.style.display='flex';
+  cp.innerHTML=`${player.icon} ${player.name}`;
+  const cpw=document.getElementById('change-player-wrap');
+  cpw.style.display='flex';
+  renderGames();
+}
+
+function renderGames(){
+  const fun=document.getElementById('fun-grid');
+  const study=document.getElementById('study-grid');
+  fun.innerHTML='';
+  study.innerHTML='';
+  GAMES.forEach(game=>{
+    const d=document.createElement('div');
+    d.className='game-card';
+    d.innerHTML=`<div class="game-icon">${game.icon}</div><div class="game-title">${game.title}</div>`;
+    d.onclick=()=>launchGame(game);
+    (FUN_IDS.includes(game.id)?fun:study).appendChild(d);
+  });
+}
+
+function launchGame(game){
+  document.getElementById('game-screen').style.display='none';
+  document.getElementById('emulator-screen').style.display='flex';
+  const iframe=document.createElement('iframe');
+  iframe.src=`${game.id}.html`;
+  iframe.onload=()=>{
+    document.querySelector('.bottom-btn').style.display='block';
+  };
+  const frame=document.getElementById('emulator-frame');
+  frame.innerHTML='';
+  frame.appendChild(iframe);
+}
+
+function backToGames(){
+  document.getElementById('emulator-screen').style.display='none';
+  document.getElementById('game-screen').style.display='block';
+}
+
+// Show BACK only on topic picker, hide when game is playing
+window.addEventListener('message', function(e){
+  if(!e.data || !e.data.type) return;
+  const btn = document.querySelector('.bottom-btn');
+  if(e.data.type === 'gameStarted') btn.style.display='none';
+  if(e.data.type === 'backToMenu')  btn.style.display='block';
+});
+
+function changePlayer(){
+  localStorage.clear();
+  location.reload();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+** SERVICE **
+
+# start PostgreSQL server
+systemctl start postgresql
+
+# stop PostgreSQL server
+systemctl stop postgresql
+
+# restart PostgreSQL server
+systemctl restart postgresql
+
+# check PostgreSQL status
+systemctl status postgresql
+
+
+** PATH **
+
+# temporarily add PostgreSQL binaries to path
+export PATH=$PATH:/usr/pgsql/bin
+
+# permanently add PostgreSQL to bash profile
+echo 'export PATH=$PATH:/usr/pgsql/bin' >> ~/.bash_profile
+
+
+** LOGIN & CONNECTION **
+# login to PostgreSQL interactive terminal (psql) as default postgres superuser
+psql -U postgres
+
+# login to specific database with user
+psql -U username -d dbname
+
+# connect to a database from psql
+\c database_name
+
+# quit/exit psql
+\q
+
+
+** PSQL FLAGS / OPTIONS **
+
+# describe underlying SQL queries of backslash commands (learning tool)
+-E
+
+# list all databases and exit
+-l
+
+# show help (list of available psql commands)
+\?
+
+# pretty format query results
+\x
+
+
+** DATABASES & SCHEMAS **
+
+# list all databases
+\l
+
+# create database
+CREATE DATABASE dbname;
+
+# delete database
+DROP DATABASE dbname;
+
+# list schemas
+\dn
+
+# list tables from all schemas
+\dt *.*
+
+# list views
+\dv
+
+# list all data types
+\dT+
+
+# list events
+\dy
+
+# list all extensions installed
+\dx
+
+# show table definition (columns, types, triggers)
+\d table_name
+
+# show detailed table definition including description and disk size
+\d+ table_name
+
+
+** TABLES & INDEXES **
+
+# create table
+CREATE TABLE users (
+id SERIAL PRIMARY KEY,
+first_name VARCHAR(100),
+last_name VARCHAR(100),
+email VARCHAR(100),
+age INT,
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+# drop table
+DROP TABLE users;
+
+# list indexes
+\di
+
+# create index to speed up queries
+CREATE INDEX idx_users_age ON users(age);
+
+# drop index
+DROP INDEX idx_users_age;
+
+
+** USERS & ROLES **
+
+# list users/roles
+\du
+
+# list specific username
+\du username
+
+# create role (login user)
+CREATE ROLE username WITH LOGIN PASSWORD 'password';
+
+# create role without inheritance
+CREATE ROLE username_noinherit NOINHERIT LOGIN PASSWORD 'password';
+
+# switch role for current session
+SET ROLE username;
+
+# grant role to another role
+GRANT role2 TO role1;
+
+# revoke role
+REVOKE role2 FROM role1;
+
+# delete role
+DROP ROLE username;
+
+# list all user mappings on server
+\deu+
+
+
+** PRIVILEGES **
+
+# grant all privileges on database to user
+GRANT ALL PRIVILEGES ON DATABASE dbname TO username;
+
+# revoke all privileges from user
+REVOKE ALL PRIVILEGES ON DATABASE dbname FROM username;
+
+
+** SELECT & QUERY BASICS **
+# select all columns
+SELECT * FROM users;
+
+# select specific columns
+SELECT first_name, email FROM users;
+
+# select distinct values
+SELECT DISTINCT location FROM users;
+
+# alias columns for readability
+SELECT first_name AS fn, last_name AS ln FROM users;
+
+
+** WHERE & CONDITIONS **
+
+# equality
+SELECT * FROM users WHERE age = 30;
+
+# multiple conditions AND
+SELECT * FROM users WHERE age > 20 AND email LIKE '%@gmail.com';
+
+# multiple conditions OR
+SELECT * FROM users WHERE age < 18 OR email LIKE '%@yahoo.com';
+
+# between range
+SELECT * FROM users WHERE age BETWEEN 20 AND 30;
+
+# null check
+SELECT * FROM users WHERE email IS NULL;
+
+# not in list
+SELECT * FROM users WHERE age NOT IN (20, 25);
+
+
+** ORDER & LIMIT**
+
+# sort ascending
+SELECT * FROM users ORDER BY age ASC;
+
+# sort descending
+SELECT * FROM users ORDER BY age DESC;
+
+# limit results
+SELECT * FROM users LIMIT 10;
+
+# offset results (pagination)
+SELECT * FROM users LIMIT 10 OFFSET 20;
+
+
+** JOIN OPERATIONS **
+
+# inner join two tables
+SELECT u.first_name, o.order_id
+FROM users u
+JOIN orders o ON u.id = o.user_id;
+
+# left join
+SELECT u.first_name, o.order_id
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+
+# right join
+SELECT u.first_name, o.order_id
+FROM users u
+RIGHT JOIN orders o ON u.id = o.user_id;
+
+# full outer join
+SELECT u.first_name, o.order_id
+FROM users u
+FULL OUTER JOIN orders o ON u.id = o.user_id;
+
+
+** GROUP & AGGREGATES **
+
+# count rows
+SELECT COUNT(*) FROM users;
+
+# sum values
+SELECT SUM(age) FROM users;
+
+# max/min
+SELECT MAX(age), MIN(age) FROM users;
+
+# average value
+SELECT AVG(age) FROM users;
+
+# group by field
+SELECT age, COUNT(*) FROM users GROUP BY age;
+
+# group by field with HAVING
+SELECT age, COUNT(*) FROM users GROUP BY age HAVING COUNT(*) > 1;
+
+
+** INSERT / UPDATE / DELETE **
+
+# insert new row
+INSERT INTO users (first_name, last_name, email, age) VALUES ('John', 'Doe', 'john@example.com', 30);
+
+# update rows
+UPDATE users SET age = 31 WHERE id = 1;
+
+# delete rows
+DELETE FROM users WHERE age < 18;
+
+# truncate table
+TRUNCATE TABLE users;
+
+
+** BACKUP & RESTORE **
+
+# backup database to SQL file
+pg_dump dbname > dbname_backup.sql
+
+# backup all databases
+pg_dumpall > all_databases_backup.sql
+
+# restore from backup
+psql -U username -d dbname -f dbname_backup.sql
+
+
+** CSV / FILE OPERATIONS **
+
+# export table to CSV
+\copy (SELECT * FROM users) TO 'file_path.csv' WITH CSV
+
+# execute bash command from psql
+\! bash_command

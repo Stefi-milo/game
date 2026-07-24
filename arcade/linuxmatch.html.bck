@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Linux Match</title>
+<style>
+body {
+  background: radial-gradient(circle at top, #0d1117, #05080f);
+  color:#e0e0e0;
+  font-family:'Courier New', monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin:0;
+  padding:0;
+  transform: scale(0.9);
+  transform-origin: top center;
+}
+h1 { 
+  color:#00ffd0; 
+  letter-spacing:5px; 
+  margin-top:20px; 
+  font-size:2.2rem; 
+}
+#menu { margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:20px; }
+.section-title { font-size:0.9rem; letter-spacing:2px; color:#888; }
+.selector-row { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.selector-card { 
+  padding:10px 16px; 
+  border-radius:10px; 
+  cursor:pointer; 
+  border:2px solid #2a2f3e; 
+  font-size:12px; 
+  letter-spacing:1px; 
+  transition:0.2s; 
+}
+.selector-card:hover { transform:translateY(-2px); }
+.diff { background:#1a2330; }
+.diff.active { border-color:#00ffd0; box-shadow:0 0 8px #00ffd0; }
+.mode { background:#2a1a30; }
+.mode.active { border-color:#ff4dff; box-shadow:0 0 8px #ff4dff; }
+#topics { 
+  display:grid; 
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); 
+  gap:12px; 
+  max-width:1000px; 
+  width:100%; 
+}
+.topic-card { 
+  padding:16px; 
+  border-radius:12px; 
+  background:#161b27; 
+  border:2px solid #2a2f3e; 
+  cursor:pointer; 
+  text-align:center; 
+  font-size:12px; 
+  transition:0.2s; 
+}
+.topic-card:hover { transform:scale(1.03); border-color:#00ffd0; }
+#game { display:none; flex-direction:column; align-items:center; width:100%; }
+.stats { margin-top:10px; font-size:16px; color:#00ffd0; }
+.grid { 
+  display:grid; 
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); 
+  gap:12px; 
+  width:95%; 
+  margin-top:20px; 
+}
+.card { 
+  min-height:90px; 
+  padding:12px; 
+  border-radius:10px; 
+  text-align:center; 
+  cursor:pointer; 
+  border:2px solid #2a2f3e; 
+  font-size:14px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  transition:0.2s; 
+  word-break: break-word; 
+}
+.card:hover { transform:scale(1.04); }
+.command { background:#3a1a1a; border-color:#ff4d4d; }
+.meaning { background:#3a2a1a; border-color:#ffb347; }
+.selected { outline:2px solid #00ffd0; box-shadow:0 0 10px #00ffd0; }
+.matched { background:#0f5132 !important; border-color:#00ffae; box-shadow:0 0 12px #00ffae; }
+</style>
+</head>
+<body>
+<h1>🐧 Linux Match</h1>
+
+<div id="menu">
+  <div>
+    <div class="section-title">DIFFICULTY</div>
+    <div class="selector-row" id="difficulty"></div>
+  </div>
+  <div>
+    <div class="section-title">MODE</div>
+    <div class="selector-row" id="mode"></div>
+  </div>
+  <div>
+    <div class="section-title">SELECT TOPIC</div>
+    <div id="topics"></div>
+  </div>
+</div>
+
+<div id="game">
+  <div class="stats" id="stats"></div>
+  <div class="grid" id="cards"></div>
+</div>
+
+<script>
+let TOPICS = {}
+let selectedDiff = 8
+let selectedMode = 'normal'
+
+async function loadData(){
+  const res = await fetch('cheatsheet-linux.txt')
+  const text = await res.text()
+  TOPICS = parse(text)
+  buildUI()
+}
+
+function parse(raw){
+  const topics = {}
+  let current = "Default"
+  let lastComment = null
+  topics[current] = []
+
+  raw.split('\n').forEach(l=>{
+    l = l.trim()
+    if(!l) return
+    if(l.startsWith('**')){ 
+      current = l.replace(/\*\*/g,'').trim()
+      if(!topics[current]) topics[current] = []
+    }
+    else if(l.startsWith('#')){
+      lastComment = l.replace(/^#+\s*/, '')
+    }
+    else {
+      if(lastComment){
+        topics[current].push([l, lastComment])
+        lastComment = null
+      } 
+      else if(l.includes('|')){
+        const parts = l.split('|').map(x=>x.trim())
+        if(parts.length === 2){
+          topics[current].push(parts)
+        }
+      }
+    }
+  })
+  return topics
+}
+
+function buildUI(){
+  const d = document.getElementById('difficulty')
+  ;[4,8,12].forEach(v=>{
+    const el=document.createElement('div')
+    el.className='selector-card diff'
+    el.innerText = v===4?'EASY':v===8?'MEDIUM':'HARD'
+    if(v===8) el.classList.add('active')
+    el.onclick=()=>{
+      selectedDiff=v
+      document.querySelectorAll('.diff').forEach(x=>x.classList.remove('active'))
+      el.classList.add('active')
+    }
+    d.appendChild(el)
+  })
+
+  const m = document.getElementById('mode')
+  ;['normal','reverse'].forEach(v=>{
+    const el=document.createElement('div')
+    el.className='selector-card mode'
+    el.innerText=v.toUpperCase()
+    if(v==='normal') el.classList.add('active')
+    el.onclick=()=>{
+      selectedMode=v
+      document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'))
+      el.classList.add('active')
+    }
+    m.appendChild(el)
+  })
+
+  const t = document.getElementById('topics')
+  Object.keys(TOPICS).forEach(name=>{
+    if(!TOPICS[name].length) return
+    const el=document.createElement('div')
+    el.className='topic-card'
+    el.innerText = name + " ("+TOPICS[name].length+")"
+    el.onclick=()=>startGame(name)
+    t.appendChild(el)
+  })
+
+  const mix=document.createElement('div')
+  mix.className='topic-card'
+  mix.innerText='MIXED'
+  mix.onclick=()=>startGame('mixed')
+  t.appendChild(mix)
+}
+
+function startGame(topic){
+  document.getElementById('menu').style.display='none'
+  document.getElementById('game').style.display='flex'
+
+  let allPairs = topic==='mixed' ? Object.values(TOPICS).flat() : [...TOPICS[topic]]
+  let usedIndices = []
+
+  function nextSet(){
+    let remaining = allPairs.filter((_,i)=>!usedIndices.includes(i))
+    if(!remaining.length){
+      alert('All cards used!')
+      document.getElementById('menu').style.display='flex'
+      document.getElementById('game').style.display='none'
+      return
+    }
+    let pairs = remaining.sort(()=>Math.random()-0.5).slice(0, selectedDiff)
+    let pairIndices = pairs.map(p=>allPairs.indexOf(p))
+    usedIndices.push(...pairIndices)
+    renderGame(pairs)
+  }
+
+  function renderGame(pairs){
+    const container = document.getElementById('cards')
+    container.innerHTML=''
+
+    let cards = []
+    pairs.forEach((p,index)=>{
+      const pairId = 'pair-'+index
+      const t1 = selectedMode==='normal'? p[0] : p[1]
+      const t2 = selectedMode==='normal'? p[1] : p[0]
+      cards.push({text:t1,id:pairId,className:'command'})
+      cards.push({text:t2,id:pairId,className:'meaning'})
+    })
+
+    cards.sort(()=>Math.random()-0.5)
+
+    let sel=null, matches=0, moves=0, start=Date.now()
+
+    function stats(){
+      let time=Math.floor((Date.now()-start)/1000)
+      document.getElementById('stats').innerText =
+        `🌀 Moves: ${moves} | ✅ Matches: ${matches}/${pairs.length} | ⏱ Time: ${time}s`
+    }
+
+    function check(){
+      if(!sel) return
+      moves++
+      if(container.selected.dataset.id===sel.dataset.id){
+        container.selected.classList.add('matched')
+        sel.classList.add('matched')
+        matches++
+      } else {
+        container.selected.classList.remove('selected')
+        sel.classList.remove('selected')
+      }
+      container.selected=null
+      sel=null
+      stats()
+      if(matches===pairs.length) setTimeout(nextSet,800)
+    }
+
+    cards.forEach(c=>{
+      const div = document.createElement('div')
+      div.className='card '+c.className
+      div.innerText = c.text
+      div.dataset.id = c.id
+      div.onclick=()=>{
+        if(div.classList.contains('matched')) return
+        if(!container.selected){
+          container.selected=div
+          div.classList.add('selected')
+        } else {
+          sel=div
+          div.classList.add('selected')
+          check()
+        }
+      }
+      container.appendChild(div)
+    })
+    stats()
+  }
+
+  nextSet()
+}
+
+loadData()
+</script>
+</body>
+</html>

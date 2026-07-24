@@ -1,0 +1,212 @@
+** TROUBLESHOOTING – APACHE (HTTPD) **
+
+# Check Apache service status
+sudo systemctl status apache2
+
+# Start Apache service
+sudo systemctl start apache2
+
+# Stop Apache service
+sudo systemctl stop apache2
+
+# Restart Apache service
+sudo systemctl restart apache2
+
+# Reload Apache configuration without downtime
+sudo systemctl reload apache2
+
+# Enable Apache to start on boot
+sudo systemctl enable apache2
+
+# Disable Apache from starting on boot
+sudo systemctl disable apache2
+
+# Test Apache configuration syntax
+sudo apachectl configtest
+
+# Show loaded Apache modules
+apachectl -M
+
+# Show virtual hosts
+apachectl -S
+
+# Check Apache version
+apachectl -v
+
+# View Apache access logs
+tail -f /var/log/apache2/access.log
+
+# View Apache error logs
+tail -f /var/log/apache2/error.log
+
+# Search for errors in Apache logs
+grep -i error /var/log/apache2/error.log
+
+# Check which process is using port 80
+ss -tulnp | grep :80
+
+# Check open network ports
+ss -tuln
+
+# Test HTTP response locally
+curl -I http://localhost
+
+
+** TROUBLESHOOTING – NGINX **
+
+# Check Nginx service status
+sudo systemctl status nginx
+
+# Start Nginx service
+sudo systemctl start nginx
+
+# Stop Nginx service
+sudo systemctl stop nginx
+
+# Restart Nginx service
+sudo systemctl restart nginx
+
+# Reload Nginx configuration without downtime
+sudo systemctl reload nginx
+
+# Enable Nginx to start on boot
+sudo systemctl enable nginx
+
+# Disable Nginx from starting on boot
+sudo systemctl disable nginx
+
+# Test Nginx configuration syntax
+sudo nginx -t
+
+# Show full Nginx configuration
+sudo nginx -T
+
+# Check Nginx version
+nginx -v
+
+# Show detailed Nginx version and build info
+nginx -V
+
+# View Nginx access logs
+tail -f /var/log/nginx/access.log
+
+# View Nginx error logs
+tail -f /var/log/nginx/error.log
+
+# Search for errors in Nginx logs
+grep -i error /var/log/nginx/error.log
+
+# Check which process is using port 80
+ss -tulnp | grep :80
+
+# Test HTTP response locally
+curl -I http://localhost
+
+
+** TROUBLESHOOTING – COMMON WEB SERVER ISSUES **
+
+# Check if service is listening on port 80
+ss -tulnp | grep :80
+
+# Check if service is listening on port 443
+ss -tulnp | grep :443
+
+# Test HTTP locally
+curl -v http://localhost
+
+# Test HTTPS locally
+curl -vk https://localhost
+
+# Check DNS resolution for your domain
+nslookup yourdomain.com
+
+# Test connectivity to server
+ping yourdomain.com
+
+# Trace route to server
+traceroute yourdomain.com
+
+# Check firewall rules
+iptables -L -v -n
+
+# Allow HTTP traffic through firewall
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+# Allow HTTPS traffic through firewall
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+
+** TROUBLESHOOTING – VIRTUAL HOSTS / SERVER BLOCKS **
+
+# List Apache virtual hosts
+apachectl -S
+
+# Search for VirtualHost in Apache configs
+grep -R "VirtualHost" /etc/apache2/
+
+# Search for server_name in Nginx configs
+grep -R "server_name" /etc/nginx/
+
+# Test specific host header with curl
+curl -H "Host: example.com" http://127.0.0.1
+
+
+** TROUBLESHOOTING – SSL / HTTPS **
+
+# Check SSL certificate
+openssl s_client -connect yourdomain.com:443
+
+# Check SSL certificate expiration date
+openssl x509 -enddate -noout -in cert.pem
+
+# Test HTTPS endpoint
+curl -v https://yourdomain.com
+
+# Ignore SSL certificate errors (testing only)
+curl -k https://yourdomain.com
+
+
+** TROUBLESHOOTING – PERFORMANCE / DEBUGGING **
+
+# Monitor Nginx error logs in real-time
+tail -f /var/log/nginx/error.log
+
+# Monitor Apache error logs in real-time
+tail -f /var/log/apache2/error.log
+
+# Check system CPU/memory usage
+top
+
+# Check memory usage
+free -h
+
+# Check disk usage
+df -h
+
+# Benchmark HTTP server
+ab -n 1000 -c 10 http://localhost/
+
+# Test server load with curl loop
+for i in {1..10}; do curl -s http://localhost
+; done
+
+
+** TROUBLESHOOTING – CONFIG FILE LOCATIONS **
+
+# Apache main configuration file
+/etc/apache2/apache2.conf
+
+# Apache sites-available directory
+/etc/apache2/sites-available/
+
+# Apache sites-enabled directory
+/etc/apache2/sites-enabled/
+
+# Nginx main configuration file
+/etc/nginx/nginx.conf
+
+# Nginx sites-available directory
+/etc/nginx/sites-available/
+
+# Nginx sites-enabled directory
+/etc/nginx/sites-enabled/

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Master</title>
+<script src="https://cdn.jsdelivr.net/npm/chess.js@0.11.0"></script>
+<style>
+body { font-family: 'Courier New', monospace; background:#0d1117; color:#fff; display:flex; flex-direction:column; align-items:center; margin:0; padding:20px;}
+h1 { color:#ff6b35; margin-bottom:10px; font-size:1.8em; text-align:center;}
+#controls { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; justify-content:center;}
+button { padding:6px 14px; border-radius:6px; border:1px solid #444; background:#1e2530; color:#ccc; cursor:pointer; }
+button:hover { background:#2a3040; }
+button.active { border-color:#ff6b35; color:#ff6b35; }
+#board-wrap { display:grid; border:2px solid #2a2f3e; touch-action: manipulation; }
+.sq { display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.sq.light { background:#f0d9b5; }
+.sq.dark  { background:#b58863; }
+.sq.selected { outline: 3px solid #ff6b35; }
+.piece { pointer-events:none; width:100%; height:100%; object-fit:contain; }
+#info { display:flex; flex-direction:column; margin-top:10px; width:90%; max-width:480px; color:#ccc; font-size:0.9em;}
+#status { margin-bottom:4px; text-align:center;}
+#history { background:#161b27; padding:6px; border-radius:6px; border:1px solid #2a2f3e; max-height:120px; overflow-y:auto; white-space:pre-wrap;}
+@media(max-width:600px){
+  #board-wrap { grid-template-columns:repeat(8,40px); grid-template-rows:repeat(8,40px);}
+  .sq { width:40px; height:40px; }
+}
+@media(min-width:601px){
+  #board-wrap { grid-template-columns:repeat(8,60px); grid-template-rows:repeat(8,60px);}
+  .sq { width:60px; height:60px; }
+}
+</style>
+</head>
+<body>
+
+<h1>Chess Master</h1>
+
+<div id="controls">
+  <button data-level="1" class="lvl-btn active">Easy</button>
+  <button data-level="2" class="lvl-btn">Medium</button>
+  <button data-level="3" class="lvl-btn">Hard</button>
+  <button id="resetBtn">Reset</button>
+</div>
+
+<div id="board-wrap"></div>
+
+<div id="info">
+  <div id="status">White to move</div>
+  <div id="history"></div>
+</div>
+
+<script>
+const GLYPH = {
+  w: { p:'pieces/wP.png', r:'pieces/wR.png', n:'pieces/wN.png', b:'pieces/wB.png', q:'pieces/wQ.png', k:'pieces/wK.png' },
+  b: { p:'pieces/bP.png', r:'pieces/bR.png', n:'pieces/bN.png', b:'pieces/bB.png', q:'pieces/bQ.png', k:'pieces/bK.png' }
+};
+
+const game = new Chess();
+let selected = null;
+let level = 1; // AI difficulty
+
+function render() {
+  const boardEl = document.getElementById('board-wrap');
+  boardEl.innerHTML = '';
+  for (let r = 8; r >= 1; r--) {
+    for (let f = 0; f < 8; f++) {
+      const sq = String.fromCharCode(97 + f) + r;
+      const isLight = (f + r) % 2 === 0;
+      const div = document.createElement('div');
+      div.className = 'sq ' + (isLight ? 'light' : 'dark');
+      if (selected === sq) div.classList.add('selected');
+      div.dataset.sq = sq;
+
+      const piece = game.get(sq);
+      if (piece) {
+        const img = document.createElement('img');
+        img.src = GLYPH[piece.color][piece.type];
+        img.className = 'piece';
+        div.appendChild(img);
+      }
+
+      div.addEventListener('click', () => onSquareClick(sq));
+      boardEl.appendChild(div);
+    }
+  }
+  updateStatus();
+  updateHistory();
+}
+
+function onSquareClick(sq) {
+  if (game.game_over()) return;
+
+  if (game.turn() !== 'w') return; // human is white
+
+  const piece = game.get(sq);
+
+  if (selected) {
+    const move = game.move({ from: selected, to: sq, promotion: 'q' });
+    if (move) {
+      selected = null;
+      render();
+      setTimeout(aiMove, 300);
+      return;
+    }
+    if (piece && piece.color === 'w') {
+      selected = sq;
+      render();
+      return;
+    }
+    selected = null;
+    render();
+  } else {
+    if (piece && piece.color === 'w') {
+      selected = sq;
+      render();
+    }
+  }
+}
+
+// Basic AI evaluation: piece values
+const PIECE_VALUES = { p:1, n:3, b:3, r:5, q:9, k:1000 };
+
+function evaluateMove(move) {
+  let score = 0;
+  if (move.captured) score += PIECE_VALUES[move.captured];
+  return score;
+}
+
+function aiMove() {
+  if (game.game_over()) return;
+  const moves = game.moves({ verbose: true });
+  if (!moves.length) return;
+
+  let move;
+  if (level === 1) {
+    move = moves[Math.floor(Math.random() * moves.length)]; // easy: random
+  } else if (level === 2) {
+    // medium: avoid losing pieces
+    const safeMoves = moves.filter(m => !m.captured);
+    move = safeMoves.length ? safeMoves[Math.floor(Math.random()*safeMoves.length)] : moves[Math.floor(Math.random()*moves.length)];
+  } else {
+    // hard: pick move that maximizes captured value
+    let bestScore = -1;
+    move = moves[0];
+    for (const m of moves) {
+      const s = evaluateMove(m);
+      if (s > bestScore) { bestScore = s; move = m; }
+    }
+  }
+  game.move(move);
+  render();
+}
+
+function updateStatus() {
+  const s = document.getElementById('status');
+  if (game.in_checkmate()) s.textContent = 'Checkmate!';
+  else if (game.in_stalemate()) s.textContent = 'Stalemate';
+  else s.textContent = game.turn() === 'w' ? 'Your move' : 'AI thinking…';
+}
+
+function updateHistory() {
+  const h = document.getElementById('history');
+  const hist = game.history();
+  const lines = [];
+  for (let i = 0; i < hist.length; i += 2) {
+    lines.push((i / 2 + 1) + '. ' + hist[i] + (hist[i + 1] ? ' ' + hist[i + 1] : ''));
+  }
+  h.textContent = lines.join('  ');
+}
+
+document.querySelectorAll('.lvl-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    level = parseInt(btn.dataset.level);
+    document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  game.reset();
+  selected = null;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

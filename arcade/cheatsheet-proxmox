@@ -1,0 +1,187 @@
+** BASICS **
+
+# List VMs
+qm list
+
+# Create or restore a virtual machine
+qm create <vmid>
+
+# Start a VM
+qm start <vmid>
+
+# Suspend virtual machine
+qm suspend <vmid>
+
+# Shutdown a VM
+qm shutdown <vmid>
+
+# Reboot a VM
+qm reboot <vmid>
+
+# Reset a VM
+qm reset <vmid>
+
+# Stop a VM
+qm stop <vmid>
+
+# Destroy the VM and all used/owned volumes
+qm destroy <vmid>
+
+# Enter Qemu Monitor interface
+qm monitor <vmid>
+
+# Get the VM's current and pending configuration
+qm pending <vmid>
+
+# Send key event to virtual machine
+qm sendkey <vmid> <key> [OPTIONS]
+
+# Show command line which is used to start the VM
+qm showcmd <vmid> [OPTIONS]
+
+# Unlock the VM
+qm unlock <vmid>
+
+# Clone a VM
+qm clone <vmid> <newid>
+
+# Clone a VM in full clone mode and also set the name
+qm clone <newid> --full --name <name>
+
+# Migrate a VM
+qm migrate <vmid> <target-node>
+
+# Show VM status
+qm migrate <vmid> <target-node>
+
+
+** PV, VG & LV MANAGEMENT **
+
+# Create a PV
+pvcreate <disk-device-name>
+
+# Remove a PV
+pvremove <disk-device-name>
+
+# List all PVs
+pvs
+
+# Create a VG
+vgcreate <vg-name> <disk-device-name>
+
+# Remove a VG
+vgremove <vg-name>
+
+# List all VGs
+vgs
+
+# Create a LV
+lvcreate -L <lv-size> -n <lv-name> <vg-name>
+
+# Remove a LV
+lvremove <vg-name>/<lv-name>
+
+# List all LVs
+lvs
+
+
+** DISK **
+
+# Import disk to VM
+qm disk import <vmid> <source> <storage>
+
+# Move volume to different storage or to a different VM
+qm disk move <vmid> <disk> [<storage>] [OPTIONS]
+
+# Rescan storages and update disk sizes
+qm disk rescan [OPTIONS]
+
+# Extend volume size
+qm disk resize <vmid> <disk> <size> [OPTIONS]
+
+# Unlink/delete disk images
+qm disk unlink <vmid> --idlist <string> [OPTIONS]
+
+# Rescan volumes
+qm rescan
+
+
+** SNAPSHOT **
+
+# List all snapshots
+qm listsnapshot <vmid>
+
+# Snapshot a VM
+qm snapshot <vmid> <snapname>
+
+# Delete a snapshot
+qm delsnapshot <vmid> <snapname>
+
+# Rollback a snapshot
+qm rollback <vmid> <snapname>
+
+# Open a terminal using a serial device
+qm terminal <vmid> [OPTIONS]
+
+# Proxy VM VNC traffic to stdin/stdout
+qm vncproxy <vmid>
+
+
+** OTHERS **
+
+# Execute Qemu Guest Agent commands
+qm guest cmd <vmid> <command>
+
+# Executes the given command via the guest agent
+qm guest exec <vmid> [<extra-args>] [OPTIONS]
+
+# Gets the status of the given pid started
+qm guest exec-status <vmid> <pid>
+
+# Sets the password for the given user to the given password
+qm guest passwd <vmid> <username> [OPTIONS]
+
+
+** CLOUDINIT **
+
+# Get automatically generated cloudinit config
+qm cloudinit dump <vmid> <type>
+
+# Get the cloudinit current and pending config
+qm cloudinit pending <vmid>
+
+# Regenerate and change cloudinit config drive
+qm cloudinit update <vmid>
+
+
+** STORAGE MANAGEMENT **
+
+# Create a new storage
+pvesm add [OPTIONS]
+
+# Allocate disk images
+pvesm alloc [OPTIONS]
+
+# Delete volume
+pvesm free [OPTIONS]
+
+# Delete storage configuration
+pvesm remove
+
+# List storage content
+pvesm list [OPTIONS]
+
+# An alias for pvesm scan lvm
+pvesm lvmscan
+
+# An alias for pvesm scan lvmthin
+pvesm lvmthinscan
+
+# List local LVM volume groups
+pvesm scan lvm
+
+# List local LVM Thin Pools
+pvesm scan lvmthin
+
+# Get status for all datastores
+pvesm status [OPTIONS]

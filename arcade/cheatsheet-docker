@@ -1,0 +1,130 @@
+** DOCKER BASE CONTROLS ** 
+
+# List of containers started
+docker ps
+
+# List of all containers
+docker ps -a
+
+# Recovers the docker configuration
+dock info
+
+# Recover docker version
+docker version
+
+# Builds a Docker image from a "Dockerfile" or a container
+docker build -t <Image>: <Tag>
+
+# Connects to a remote repository
+docker login <repository>
+
+# Push image to remote repository
+docker push <Image_Name>: <Tag>
+
+# Extracts the image from the remote repository
+docker pull <Image_Name>
+
+
+** IMAGE CONTROL **
+
+# List locally available images
+dock images
+
+# Execute the image
+docker run <Image>
+
+# Create an image
+docker create <Image>: <Tag>
+
+# Delete image
+docker rmi <Image>
+
+# Saving images in a tar archive
+docker save <Image>
+
+# Search for Docker images
+docker search <image>
+
+# Recover a docker image
+docker pull <image>
+
+# Builds an image from a "dockerfile"
+docker build -t <image-name>
+
+# Removes all unnecessary docking images
+docker image prune
+
+
+** NETWORK COMMANDS **
+
+# List of networks
+docker network ls
+
+# Control network information
+docker network inspector <Network>
+
+# Create a network
+docker network create <Network>
+
+# Removes a network
+docker network rm <Network>
+
+# Connect a container to the network
+docker network connect <Network> <Container>
+
+# Specifies the IP address of the container interface
+docker network connect --ip <IP> <Network> <Container>
+
+# Disconnect the network container
+docker network disconnect <Network_Name> <Container>
+
+
+** VOLUME CONTROLS **
+
+# Image controls
+docker volume ls
+
+# Volume control
+docker volume inspector <Volume>
+
+# Create a volume
+docker volume create <Volume>
+
+# Remove volume
+docker volume rm <Volume>
+
+# Removes unused volumes
+docker volume prune
+
+
+** DOCKER-COMPOSE **
+
+# Start all services defined in the docker-compose.yml file
+docker-compose up
+
+# Stop and remove all containers, networks, and volumes associated with the services defined in the docker-compose.yml file
+docker-compose down
+
+# List all containers started by the docker-compose up command, along with their status
+docker-compose ps
+
+# View the logs of all containers or a specific service
+docker-compose logs
+
+# Build or rebuild all Docker images defined in the docker-compose.yml file
+docker-compose build
+
+# Stop all containers started by docker-compose up command without removing them
+docker-compose stop
+
+# Restart all containers or a specific service
+docker-compose restart
+
+# Run a command in a running container
+docker-compose exec
+
+# Pull updated images for services from their respective repositories
+docker-compose pull
+
+# Scale the number of containers for a specific service
+docker-compose up --scale <service>=<n>

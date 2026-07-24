@@ -1,0 +1,191 @@
+** NODE JS – BASIC COMMANDS **
+
+# Check Node.js version
+node -v
+
+# Check npm version
+npm -v
+
+# Run a JavaScript file
+node app.js
+
+# Start Node REPL (interactive shell)
+node
+
+# Exit REPL
+.exit
+
+
+** NODE JS – PROJECT SETUP **
+
+# Initialize new project (interactive)
+npm init
+
+# Initialize project with defaults
+npm init -y
+
+# Install package
+npm install express
+
+# Install specific version
+npm install express@4.18.2
+
+# Install package globally
+npm install -g nodemon
+
+# Remove package
+npm uninstall express
+
+# Install all dependencies from package.json
+npm install
+
+
+** NODE JS – PACKAGE MANAGEMENT **
+
+#List installed packages
+npm list
+
+# List global packages
+npm list -g --depth=0
+
+# Show package info
+npm info express
+
+# Check outdated packages
+npm outdated
+
+# Update packages
+npm update
+
+# Audit for vulnerabilities
+npm audit
+
+# Fix vulnerabilities automatically
+npm audit fix
+
+
+** NODE JS – SCRIPTS **
+
+# Run script defined in package.json
+npm run start
+
+# Run custom script
+npm run dev
+
+# Run test script
+npm test
+
+# Run script with arguments
+npm run start -- --port=3000
+
+
+** NODE JS – NPM CACHE & CONFIG **
+
+# Clean npm cache
+npm cache clean --force
+
+# Verify npm cache
+npm cache verify
+
+# Show npm config
+npm config list
+
+# Set npm config value
+npm config set init-author-name "Your Name"
+
+
+** NODE JS – NVM (NODE VERSION MANAGER) **
+
+# Install Node version
+nvm install 18
+
+# List installed versions
+nvm list
+
+# Use specific Node version
+nvm use 18
+
+# Show current version
+nvm current
+
+# Set default version
+nvm alias default 18
+
+
+** NODE JS – DEBUGGING **
+
+# Run app in debug mode
+node inspect app.js
+
+# Run with break on first line
+node --inspect-brk app.js
+
+# Enable debug logging
+DEBUG=* node app.js
+
+
+** NODE JS – PROCESS MANAGEMENT **
+
+# Run app with nodemon (auto-restart)
+nodemon app.js
+
+# Pass environment variables (Linux/macOS)
+PORT=3000 node app.js
+
+
+** NODE JS – FILE SYSTEM & PATH **
+
+# Run script and print current directory
+node -e "console.log(__dirname)"
+
+# Execute inline JavaScript
+node -e "console.log('Hello World')"
+
+
+** NODE JS – NETWORKING / SERVER **
+
+# Start simple HTTP server (Node one-liner)
+node -e "require('http').createServer((req,res)=>res.end('OK')).listen(3000)"
+
+# Check if server is running on port
+ss -tulnp | grep 3000
+
+# Test local server
+curl http://localhost:3000
+
+
+** NODE JS – BUILD & TOOLING **
+
+# Run TypeScript compiler
+npx tsc
+
+# Run package without installing globally
+npx create-react-app myapp
+
+# Run local binary from node_modules
+npx nodemon app.js
+
+
+** NODE JS – ENVIRONMENT VARIABLES **
+
+# Create .env file (manual)
+
+touch .env
+
+# Run app with dotenv
+node -r dotenv/config app.js
+
+# Print environment variables
+node -e "console.log(process.env)"
+
+
+** NODE JS – LOGGING & MONITORING **
+
+# Print logs to console
+console.log("message")
+
+# Run app and log output to file
+node app.js > output.log
+
+# Append logs to file
+node app.js >> output.log

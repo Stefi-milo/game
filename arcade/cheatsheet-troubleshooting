@@ -1,0 +1,376 @@
+** TROUBLESHOOTING – (DATA LINK) **
+
+# Show network interfaces (status, MAC)
+ip link show
+
+# Show ARP table (IP ↔ MAC mapping)
+ arp -a
+
+# Show ARP/neighbors table (Linux)
+ ip neigh
+
+# Show interface errors and drops
+ ip -s link
+
+# Bring interface up
+ ip link set eth0 up
+
+# Bring interface down
+ ip link set eth0 down
+
+# Monitor ARP traffic on network
+ tcpdump -e -n arp
+
+# Show bridge/switching information
+ bridge link
+
+
+** TROUBLESHOOTING – (NETWORK) **
+
+# Show IP configuration (Linux)
+ip a
+
+# Show routing table (Linux)
+ ip route
+
+# Check route used to reach destination
+ ip route get 8.8.8.8
+
+# Test connectivity to host
+ ping 8.8.8.8
+
+# Send a specific number of packets
+ ping -c 4 google.com
+
+# Set packet size in bytes
+ ping -s 1024 google.com
+
+# Set interval between packets (seconds)
+ ping -i 0.5 google.com
+
+# Set TTL value
+ ping -t 64 google.com
+
+# Flood ping (stress test, requires root)
+ ping -f google.com
+
+# Set timeout in seconds
+ ping -W 2 google.com
+
+# Ping with timestamp output
+ ping -D google.com
+
+# Specify number of packets and interval together
+ ping -c 10 -i 0.2 google.com
+
+# Trace route (Linux)
+ traceroute 8.8.8.8
+
+# Test connectivity to gateway
+ ping 192.168.1.1
+
+# Show policy routing rules
+ ip rule show
+
+
+** TROUBLESHOOTING – (TRANSPORT) **
+
+# Show listening TCP/UDP ports
+ ss -tuln
+
+# Show ports with associated processes
+ ss -tulnp
+
+# Test connectivity to specific port
+ nc -zv 8.8.8.8 80
+
+# Scan ports on host
+ nmap 192.168.1.1
+
+# List open sockets and connections
+ lsof -i
+
+
+** TROUBLESHOOTING – DNS **
+
+# Resolve domain name to IP
+ nslookup google.com
+
+# Query specific DNS server
+nslookup google.com 8.8.8.8
+
+# Perform detailed DNS query
+ dig google.com
+
+# Trace full DNS resolution path
+ dig +trace google.com
+
+# Perform reverse DNS lookup
+ dig -x 8.8.8.8
+
+# Restart DNS resolver service (Linux)
+ sudo systemctl restart systemd-resolved
+
+
+** TROUBLESHOOTING – DHCP **
+
+# Show current IP configuration (Linux)
+ ip a
+
+# Request new DHCP lease (Linux)
+ sudo dhclient
+
+# Show DHCP lease information (Linux)
+ cat /var/lib/dhcp/dhclient.leases
+
+# Capture DHCP traffic (discover/offer/request/ack)
+ tcpdump -i eth0 port 67 or port 68
+
+
+** TROUBLESHOOTING – FIREWALL **
+
+# Show iptables rules with counters
+ sudo iptables -L -v -n
+
+# Show NAT table rules
+ sudo iptables -t nat -L -v -n
+
+# Allow incoming TCP port 22
+ sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# Block traffic from specific IP
+ sudo iptables -A INPUT -s 192.168.1.100 -j DROP
+
+# Flush all iptables rules
+ sudo iptables -F
+
+# Show nftables ruleset
+ sudo nft list ruleset
+
+# Add nftables rule to allow port 80
+ sudo nft add rule inet filter input tcp dport 80 accept
+
+# Show UFW firewall status
+ sudo ufw status verbose
+
+# Allow port using UFW
+ sudo ufw allow 80
+
+# Deny traffic from IP using UFW
+ sudo ufw deny from 192.168.1.100
+
+# Enable UFW firewall
+ sudo ufw enable
+
+
+** TROUBLESHOOTING – CERTIFICATES / TLS **
+
+# Connect and display SSL certificate
+ openssl s_client -connect google.com:443
+
+# Show certificate details
+ openssl x509 -in cert.pem -text -noout
+
+# Show certificate expiration date
+ openssl x509 -enddate -noout -in cert.pem
+
+# Verify certificate chain
+ openssl verify cert.pem
+
+# Test HTTPS connection with verbose output
+ curl -v https://google.com
+
+# Ignore certificate errors (testing only)
+ curl -k https://example.com
+
+
+** TROUBLESHOOTING – ROUTING (ADVANCED) **
+
+# Add static route
+ ip route add 10.0.0.0/24 via 192.168.1.1
+
+# Delete static route
+ ip route del 10.0.0.0/24
+
+# Flush routing cache
+ ip route flush cache
+
+# Show policy routing rules
+ ip rule show
+
+# Add policy-based routing rule
+ ip rule add from 192.168.1.100 table 100
+
+
+** TROUBLESHOOTING – PACKET CAPTURE **
+
+# Capture packets on interface
+ tcpdump -i eth0
+
+# Capture traffic for specific host
+ tcpdump host 8.8.8.8
+
+# Capture traffic for specific port
+ tcpdump port 53
+
+# Save captured packets to file
+ tcpdump -i eth0 -w file.pcap
+
+# Read packets from capture file
+ tcpdump -r file.pcap
+
+
+** TROUBLESHOOTING – CONNECTIVITY **
+
+# Test basic connectivity to host
+ ping google.com
+
+# Test connectivity to specific port
+ nc -zv google.com 80
+
+# Test TCP connectivity using telnet
+ telnet google.com 80
+
+# Trace route to destination
+ traceroute google.com
+
+# Show active connections
+ ss -tunap
+
+# Connect via SSH
+ ssh user@host
+
+# Connect via SSH on custom port
+ ssh -p 2222 user@host
+
+# Specify private key for authentication
+ ssh -i key.pem user@host
+
+# Enable verbose output (debugging)
+ ssh -v user@host
+
+# More verbose debug output
+ ssh -vv user@host
+
+# Maximum debug output
+ ssh -vvv user@host
+
+# Execute remote command via SSH
+ ssh user@host "ls -l"
+
+# Enable X11 forwarding
+ ssh -X user@host
+
+# Enable compression
+ ssh -C user@host
+
+# Forward local port to remote host
+ ssh -L 8080:localhost:80 user@host
+
+# Forward remote port to local machine
+ ssh -R 8080:localhost:80 user@host
+
+# Dynamic SOCKS proxy (VPN-like)
+ ssh -D 1080 user@host
+
+# Connect via jump host (ProxyJump)
+ ssh -J user@jumphost user@target
+
+# Connect via multiple jump hosts
+ ssh -J user@jump1,user@jump2 user@target
+
+# Use SSH config file
+ ssh -F config user@host
+
+# Copy file to remote host (SCP)
+ scp file.txt user@host:/path/
+
+# Copy file from remote host
+ scp user@host:/path/file.txt .
+
+# Copy directory recursively
+ scp -r folder/ user@host:/path/
+
+# Use custom SSH port with SCP
+ scp -P 2222 file.txt user@host:/path/
+
+# Use key for SCP authentication
+ scp -i key.pem file.txt user@host:/path/
+
+# Connect using SFTP
+ sftp user@host
+
+# Connect SFTP on custom port
+ sftp -P 2222 user@host
+
+# Use key with SFTP
+ sftp -i key.pem user@host
+
+# Connect to FTP server
+ ftp ftp.example.com
+
+# Anonymous FTP login
+ ftp anonymous@ftp.example.com
+
+# Download file via FTP (interactive)
+ get filename
+
+# Upload file via FTP (interactive)
+ put filename
+
+# Download file via HTTP/HTTPS
+ curl http://example.com/file
+
+# Download file and save with same name
+ curl -O http://example.com/file
+
+# Download file using wget
+ wget http://example.com/file
+
+# Resume download with wget
+ wget -c http://example.com/file
+
+# Show HTTP headers only
+ curl -I http://example.com
+
+# Follow redirects
+ curl -L http://example.com
+
+# Test HTTPS with verbose output
+ curl -v https://example.com
+
+# Check if host resolves and port is open
+ nc -zv google.com 443
+
+# Capture traffic while testing connectivity
+ tcpdump -i eth0 host google.com
+
+
+** TROUBLESHOOTING – (REAL WORLD) **
+
+# Check interface/link status
+ ip link
+
+# Check IP address assignment
+ ip a
+
+# Check routing table
+ ip route
+
+# Test gateway connectivity
+ ping <gateway>
+
+# Test external IP connectivity
+ ping 8.8.8.8
+
+# Test DNS resolution
+ nslookup google.com
+
+# Test port connectivity
+ nc -zv google.com 80
+
+# Check firewall rules
+ iptables -L -v -n
+
+# Capture live traffic for debugging
+ tcpdump -i eth0

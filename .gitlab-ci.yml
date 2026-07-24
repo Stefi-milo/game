@@ -1,0 +1,103 @@
+stages:
+  - security
+  - mirror
+  - docker
+  - raspberry
+
+
+secret_scan:
+  stage: security
+  image: gitguardian/ggshield:v1.38.0
+
+  script:
+    - ggshield secret scan repo .
+
+  only:
+    - merge_requests
+    - main
+
+
+mirror_to_github:
+  stage: mirror
+  image: alpine:3.20
+
+  only:
+    - main
+
+  before_script:
+    - apk add --no-cache git git-lfs
+    - git lfs install --force
+
+    - git config --global user.email "ci@gitlab.com"
+    - git config --global user.name "GitLab CI"
+
+  script:
+    - git remote remove github 2>/dev/null || true
+    - git remote add github https://oauth2:${GITHUB_TOKEN}@github.com/Stefi-milo/game.git
+
+    - git checkout --orphan snapshot
+
+    - git add -A
+    - git commit -m "Snapshot sync"
+
+    - git push github snapshot:main --force
+
+build_and_push_image:
+  stage: docker
+  image: docker:27
+
+  services:
+    - docker:27-dind
+
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+
+  only:
+    - main
+
+  script:
+    - docker context create tls-context
+    - docker buildx create tls-context --use
+    - export IMAGE_NAME=ghcr.io/stefi-milo/game:${CI_COMMIT_SHORT_SHA}
+    - echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USER" --password-stdin
+    - |
+      docker buildx build \
+        --platform linux/arm64 \
+        -t "$IMAGE_NAME" \
+        --push \
+        arcade/
+
+deploy_raspberry:
+  stage: raspberry
+  image: alpine:3.20
+
+  tags:
+    - game
+
+  only:
+    - main
+
+  before_script:
+    - apk add --no-cache openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -p "$RASPBERRY_PORT" -H "$RASPBERRY_HOST" >> ~/.ssh/known_hosts
+
+  script:
+    - |
+      ssh -p "$RASPBERRY_PORT" "$RASPBERRY_USER@$RASPBERRY_HOST" <<EOF
+      docker pull ghcr.io/stefi-milo/game:${CI_COMMIT_SHORT_SHA}
+
+      docker stop home-arcade || true
+      docker rm home-arcade || true
+
+      docker run -d \
+        --name home-arcade \
+        --restart unless-stopped \
+        --platform linux/arm64 \
+        -p 8080:80 \
+        ghcr.io/stefi-milo/game:${CI_COMMIT_SHORT_SHA}
+
+      docker image prune -f
+      EOF

@@ -1,0 +1,883 @@
+** SYSTEM INFORMATION & STATUS **
+
+# Show kernel name
+uname
+
+# Show all system information
+uname -a
+
+# Show kernel version
+uname -r
+
+# Show architecture
+uname -m
+
+# Show operating system
+uname -o
+
+# CPU information
+lscpu
+
+# Block devices (disks, partitions)
+lsblk
+
+# Memory information
+free -h
+
+# Disk usage by filesystem
+df -h
+
+# System uptime and load
+uptime
+
+# More detailed uptime information
+uptime -p
+
+# Show uptime since specific date
+uptime -s
+
+# Show logged-in users
+who
+
+# Detailed user information with activities
+w
+
+# Show current username
+whoami
+
+# Show login history
+last
+
+# Show all environment variables
+env
+
+# Show specific variable
+echo $HOME
+
+# Set environment variable
+export PATH=$PATH:/new/path
+
+# Show PATH variable
+echo $PATH
+
+# Current date and time
+date
+
+# Set system time (as root)
+date MMddhhmmyyyy
+
+# Time zone information
+timedatectl
+
+# Set timezone
+timedatectl set-timezone America/New_York
+
+
+** FILE & DIRECTORY OPERATIONS **
+
+# List files in current directory
+ls
+
+# Detailed listing with permissions
+ls -l
+
+# Show hidden files
+ls -la
+
+# Human-readable file sizes
+ls -lh
+
+# Sort by modification time
+ls -lt
+
+# Go to home directory
+cd
+
+# Go to specific directory
+cd /path/to/directory
+
+# Go up one level
+cd ..
+
+# Show current directory
+pwd
+
+# Go to previous directory
+cd -
+
+# Create directory
+mkdir newdir
+
+# Create nested directories
+mkdir -p path/to/nested/dir
+
+# Remove empty directory
+rmdir dirname
+
+# Remove file
+rm filename
+
+# Remove directory recursively
+rm -rf dirname
+
+# Display entire file
+cat filename
+
+# View file with pagination
+less filename
+
+# Show first 10 lines
+head filename
+
+# Show last 10 lines
+tail filename
+
+# Follow file changes in real-time
+tail -f logfile
+
+# Copy file
+cp source.txt destination.txt
+
+# Copy directory recursively
+cp -r sourcedir/ destdir/
+
+# Move/rename file
+mv oldname.txt newname.txt
+
+# Move to different directory
+mv file.txt /path/to/destination/
+
+# Copy with preservation of attributes
+cp -p file.txt backup.txt
+
+# Find by name
+find /path -name "filename"
+
+# Find files modified in last 7 days
+find /path -mtime -7
+
+# Find by file type
+find /path -type f -name "*.txt"
+
+# Locate files quickly (requires updatedb)
+locate filename
+
+# Find and execute command
+find /path -name "*.log" -exec rm {} \;
+
+# Change permissions (numeric)
+chmod 755 filename
+
+# Add execute permission
+chmod +x script.sh
+
+# Change ownership
+chown user:group filename
+
+# Change ownership recursively
+chown -R user:group directory/
+
+# View file permissions
+ls -l filename
+
+
+** PROCESS MANAGEMENT **
+
+# Show user processes
+ps
+
+# Show all processes with details
+ps aux
+
+# Show process tree
+ps -ef --forest
+
+# Show processes by user
+ps -u username
+
+# Real-time process monitor
+top
+
+# Kill process by PID
+kill 1234
+
+# Force kill process
+kill -9 1234
+
+# Kill by process name
+killall processname
+
+# List all signals
+kill -l
+
+# Send specific signal
+kill -HUP 1234
+
+# List active jobs
+jobs
+
+# Send job to background
+bg %1
+
+# Bring job to foreground
+fg %1
+
+# Run command in background
+command &
+
+# Detach from terminal
+nohup command &
+
+# Enhanced process viewer (if installed)
+htop
+
+# Check service status
+systemctl status servicename
+
+# Start service
+systemctl start servicename
+
+# Enable service at boot
+systemctl enable servicename
+
+# View system logs
+journalctl -f
+
+
+** NETWORK OPERATIONS **
+
+# Show network interfaces
+ip addr show
+
+# Show routing table
+ip route show
+
+# Configure interface (temporary)
+ip addr add 192.168.1.10/24 dev eth0
+
+# Bring interface up/down
+ip link set eth0 up
+
+# Legacy interface configuration
+ifconfig
+
+# Test connectivity
+ping google.com
+
+# Ping with count limit
+ping -c 4 192.168.1.1
+
+# Trace route to destination
+traceroute google.com
+
+# MTR - network diagnostic tool
+mtr google.com
+
+# Show all connections
+netstat -tuln
+
+# Show listening ports
+netstat -tuln | grep LISTEN
+
+# Modern replacement for netstat
+ss -tuln
+
+# Show processes using ports
+netstat -tulnp
+
+# Check specific port
+netstat -tuln | grep :80
+
+# Copy file to remote host
+scp file.txt user@host:/path/
+
+# Copy from remote host
+scp user@host:/path/file.txt ./
+
+# Synchronize directories
+rsync -avz localdir/ user@host:/remotedir/
+
+# Rsync with progress
+rsync -avz --progress src/ dest/
+
+
+** TEXT PROCESSING & SEARCH **
+
+# Search for pattern in file
+grep "pattern" filename
+
+# Case-insensitive search
+grep -i "pattern" filename
+
+# Recursive search in directories
+grep -r "pattern" /path/
+
+# Show line numbers
+grep -n "pattern" filename
+
+# Count matching lines
+grep -c "pattern" filename
+
+# Replace text in file
+sed 's/old/new/g' filename
+
+# Delete lines containing pattern
+sed '/pattern/d' filename
+
+# Print specific fields
+awk '{print $1, $3}' filename
+
+# Sum values in column
+awk '{sum += $1} END {print sum}' filename
+
+# Sort file contents
+sort filename
+
+# Sort numerically
+sort -n numbers.txt
+
+# Remove duplicate lines
+uniq filename
+
+# Sort and remove duplicates
+sort filename | uniq
+
+# Count lines, words, characters
+wc filename
+
+# Count only lines
+wc -l filename
+
+# Extract first column
+cut -d',' -f1 file.csv
+
+# Extract character range
+cut -c1-10 filename
+
+# Combine files side by side
+paste file1.txt file2.txt
+
+# Use custom delimiter
+cut -d':' -f1,3 /etc/passwd
+
+
+** ARCHIVE & COMPRESSION **
+
+# Create tar archive
+tar -cf archive.tar files/
+
+# Create compressed archive
+tar -czf archive.tar.gz files/
+
+# Extract archive
+tar -xf archive.tar
+
+# Extract compressed archive
+tar -xzf archive.tar.gz
+
+# List archive contents
+tar -tf archive.tar
+
+# Compress file with gzip
+gzip filename
+
+# Decompress gzip file
+gunzip filename.gz
+
+# Create zip archive
+zip archive.zip file1 file2
+
+# Extract zip archive
+unzip archive.zip
+
+# List zip contents
+unzip -l archive.zip
+
+# Create archive with compression
+tar -czvf backup.tar.gz /home/user/
+
+# Extract to specific directory
+tar -xzf archive.tar.gz -C /destination/
+
+# Add files to existing archive
+tar -rf archive.tar newfile.txt
+
+# Update archive with newer files
+tar -uf archive.tar files/
+
+# Show directory sizes
+du -h /path/
+
+# Summary of total size
+du -sh /path/
+
+# Show sizes of all subdirectories
+du -h --max-depth=1 /path/
+
+# Largest directories first
+du -h | sort -hr | head -10
+
+
+** SYSTEM MONITORING & PERFORMANCE **
+
+# Memory usage summary
+free -h
+
+# Detailed memory stats
+cat /proc/meminfo
+
+# Virtual memory statistics
+vmstat
+
+# Memory usage every 2 seconds
+vmstat 2
+
+# Show swap usage
+swapon --show
+
+# I/O statistics (requires sysstat)
+iostat
+
+# I/O stats every 2 seconds
+iostat 2
+
+# Monitor disk I/O by process
+iotop
+
+# Show I/O usage for specific device
+iostat -x /dev/sda
+
+# Real-time process monitor
+top
+
+# Enhanced process viewer
+htop
+
+# Show load averages
+uptime
+
+# Show CPU information
+lscpu
+
+# Monitor specific process
+top -p PID
+
+# View system logs
+journalctl
+
+# Follow logs in real-time
+journalctl -f
+
+# Show logs for specific service
+journalctl -u servicename
+
+# Kernel messages
+dmesg
+
+# Last boot messages
+dmesg | tail
+
+
+** USER & PERMISSION MANAGEMENT **
+
+# Add new user
+useradd username
+
+# Add user with home directory
+useradd -m username
+
+# Modify user account
+usermod -aG groupname username
+
+# Delete user account
+userdel username
+
+# Delete user with home directory
+userdel -r username
+
+# Create new group
+groupadd groupname
+
+# Show user's groups
+groups username
+
+# Show all groups
+cat /etc/group
+
+# Add user to group
+usermod -aG groupname username
+
+# Change user's primary group
+usermod -g groupname username
+
+# Switch to root user
+su -
+
+# Switch to specific user
+su - username
+
+# Execute command as root
+sudo command
+
+# Execute command as specific user
+sudo -u username command
+
+# Edit sudoers file
+visudo
+
+# Change password
+passwd
+
+# Change another user's password (as root)
+passwd username
+
+# Show password aging info
+chage -l username
+
+# Set password expiry
+chage -M 90 username
+
+# Force password change on next login
+passwd -e username
+
+
+** PACKAGE MANAGEMENT **
+
+# Update package list (Debian/Ubuntu)
+apt update
+
+# Upgrade all packages (Debian/Ubuntu)
+apt upgrade
+
+# Install package (Debian/Ubuntu)
+apt install packagename
+
+# Remove package (Debian/Ubuntu)
+apt remove packagename
+
+# Search for packages (Debian/Ubuntu)
+apt search packagename
+
+# Show package information (Debian/Ubuntu)
+apt show packagename
+
+# Install package (RHEL/Fedora)
+yum install packagename
+
+# Update all packages (RHEL/Fedora)
+yum update
+
+# Remove package (RHEL/Fedora)
+yum remove packagename
+
+# Search for packages (RHEL/Fedora)
+yum search packagename
+
+# List installed packages (RHEL/Fedora)
+yum list installed
+
+# Install snap package
+snap install packagename
+
+# List installed snaps
+snap list
+
+# Update snap packages
+snap refresh
+
+# Remove snap package
+snap remove packagename
+
+# Search for snap packages
+snap find packagename
+
+# Install flatpak
+flatpak install packagename
+
+# List installed flatpaks
+flatpak list
+
+# Update flatpak packages
+flatpak update
+
+# Remove flatpak
+flatpak uninstall packagename
+
+# Search flatpak packages
+flatpak search packagename
+
+
+** SHELL & SCRIPTING **
+
+# Show command history
+history
+
+# Show last 10 commands
+history 10
+
+# Execute previous command
+!!
+
+# Execute command by number
+!123
+
+# Search history interactively
+Ctrl+R
+
+# Create alias
+alias ll='ls -la'
+
+# Show all aliases
+alias
+
+# Remove alias
+unalias ll
+
+# Make alias permanent (add to .bashrc)
+echo "alias ll='ls -la'" >> ~/.bashrc
+
+# Redirect output to file
+command > output.txt
+
+# Append output to file
+command >> output.txt
+
+# Redirect input from file
+command < input.txt
+
+# Redirect both stdout and stderr
+command &> output.txt
+
+# Pipe output to another command
+command1 | command2
+
+# Edit bash configuration
+nano ~/.bashrc
+
+# Reload configuration
+source ~/.bashrc
+
+# Set environment variable
+export VARIABLE=value
+
+# Add to PATH
+export PATH=$PATH:/new/path
+
+# Show environment variables
+printenv
+
+
+** SECURITY & BEST PRACTICES **
+
+# Enable UFW firewall
+ufw enable
+
+# Allow specific port
+ufw allow 22/tcp
+
+# Allow service by name
+ufw allow ssh
+
+# Deny access
+ufw deny 23
+
+# Show firewall status
+ufw status verbose
+
+# Advanced rules with iptables
+iptables -L
+
+# Generate MD5 checksum
+md5sum filename
+
+# Generate SHA256 checksum
+sha256sum filename
+
+# Verify checksum
+sha256sum -c checksums.txt
+
+# Create checksum file
+sha256sum *.txt > checksums.txt
+
+# Ubuntu security updates
+apt update && apt upgrade
+
+# Automatic security updates
+unattended-upgrades
+
+# CentOS/RHEL updates
+yum update --security
+
+# List available updates
+apt list --upgradable
+
+# Monitor authentication logs
+tail -f /var/log/auth.log
+
+# Check failed login attempts
+grep "Failed password" /var/log/auth.log
+
+# Monitor system logs
+tail -f /var/log/syslog
+
+# View login history
+last
+
+# Check for suspicious activities
+journalctl -p err
+
+
+** TROUBLESHOOTING & RECOVERY **
+
+# Mount root filesystem
+mount /dev/sda1 /mnt
+
+# Chroot into system
+chroot /mnt
+
+# Reinstall GRUB
+grub-install /dev/sda
+
+# Update GRUB configuration
+update-grub
+
+# Check file system
+fsck /dev/sda1
+
+# Force file system check
+fsck -f /dev/sda1
+
+# Automatic repair
+fsck -y /dev/sda1
+
+# Check all mounted filesystems
+fsck -A
+
+# Check service status
+systemctl status servicename
+
+# View service logs
+journalctl -u servicename
+
+# Restart failed service
+systemctl restart servicename
+
+# Enable service at boot
+systemctl enable servicename
+
+# List failed services
+systemctl --failed
+
+# Check disk space
+df -h
+
+# Monitor I/O usage
+iotop
+
+# Check memory usage
+free -h
+
+# Identify CPU usage
+top
+
+# List open files
+lsof
+
+
+** FILE TRANSFER – FTP **
+
+# Connect to FTP server
+ftp ftp.example.com
+
+# Connect to FTP server with username
+ftp username@ftp.example.com
+
+# Log in anonymously
+ftp anonymous@ftp.example.com
+
+# Download file from FTP server (interactive)
+get filename.txt
+
+# Upload file to FTP server (interactive)
+put filename.txt
+
+# Download directory recursively (if supported, use mget/mput)
+mget *.txt
+
+# Upload multiple files recursively (interactive)
+mput *.txt
+
+# Exit FTP session
+bye
+
+
+** FILE TRANSFER – SCP **
+
+# Copy file to remote host
+scp file.txt user@host:/remote/path/
+
+# Copy file from remote host
+scp user@host:/remote/path/file.txt .
+
+# Copy directory recursively to remote host
+scp -r folder/ user@host:/remote/path/
+
+# Copy directory recursively from remote host
+scp -r user@host:/remote/path/folder/ ./localpath/
+
+# Use custom SSH port with SCP
+scp -P 2222 file.txt user@host:/remote/path/
+
+# Use private key for SCP authentication
+scp -i key.pem file.txt user@host:/remote/path/
+
+# Enable verbose output for SCP
+scp -v file.txt user@host:/remote/path/
+
+# Limit bandwidth for SCP transfer
+scp -l 5000 file.txt user@host:/remote/path/
+
+
+** FILE TRANSFER – RSYNC **
+
+# Copy local file to remote host
+rsync -av file.txt user@host:/remote/path/
+
+# Copy remote file to local host
+rsync -av user@host:/remote/path/file.txt ./localpath/
+
+# Copy directory recursively to remote host
+rsync -avz folder/ user@host:/remote/path/
+
+# Copy directory recursively from remote host
+rsync -avz user@host:/remote/path/folder/ ./localpath/
+
+# Show progress during transfer
+rsync -av --progress file.txt user@host:/remote/path/
+
+# Delete files on destination not present in source
+rsync -av --delete folder/ user@host:/remote/path/
+
+# Use SSH with custom port
+rsync -av -e "ssh -p 2222" folder/ user@host:/remote/path/
+
+# Perform dry-run to see what would be copied
+rsync -avn folder/ user@host:/remote/path/
+
+# Compress files during transfer to save bandwidth
+rsync -avz folder/ user@host:/remote/path/
+
+# Preserve symbolic links, permissions, timestamps
+rsync -a folder/ user@host:/remote/path/
+
+# Test connectivity before transfer
+ping host
+
+# Check open SSH port before transfer
+nc -zv host 22
+
+# Check disk space on remote host
+ssh user@host "df -h /remote/path"
+
+# Resume interrupted transfer with rsync
+rsync -av --partial folder/ user@host:/remote/path/
