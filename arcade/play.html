@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>"></head>
+<body style="margin:0;background:#000">
+<div id="game" style="width:100%;height:100vh"></div>
+<script>
+  const p = new URLSearchParams(window.location.search);
+  EJS_player = '#game';
+  EJS_core = p.get('core');
+  EJS_gameUrl = '/roms/' + p.get('rom');
+  EJS_pathtodata = '/data/';
+  EJS_startOnLoaded = true;
+</script>
+<script src="/data/loader.js"></script>
+</body>
+</html>
