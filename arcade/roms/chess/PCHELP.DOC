@@ -1,0 +1,128 @@
+              HELP FOR NEW USERS & PROBLEMS YOU MIGHT HAVE 
+                        FROM PC PLUS CONSULTING
+
+     Public domain software is actually very easy to use if you are familiar
+with a few basic "DOS" commands. These commands are "COPY", "DISKCOPY", "DIR",  
+"TYPE", "FORMAT", & a few others.  None of the disks are "bootable", which
+means that you cannot place the disk in your computer and turn it on.
+     The first thing is to make a backup copy of your disk with the following
+command:
+     A>DISKCOPY A: B:  <enter> - (will copy all files from 'A' to 'B')
+     In the event that you get some sort of error message when using "DISKCOPY",
+you will then have to use the "COPY" command to make a backup of your original
+disk. Place a blank FORMATTED disk in the "B" drive and enter the following
+command at the "A>" prompt: 
+     A>COPY *.* B:  <enter> - (will copy all files from 'A' to 'B')
+     Now put the original disk away and use the working copy.  The next thing
+to do is see what files are on the disk.  Place the working copy in the "A"
+drive and enter the following command:
+     A>DIR   <enter> - will display the filenames
+     Now you will see many different filenames.  A filename consists of two
+parts; the filename & the extension.  The filename will be on the left (up to
+8 characters long) & the extension will be just to the right (up to 3
+characters long).  You will be looking for certain extension names; which
+will tell you something about that type of file.  
+
+******************************************************************************
+*      IMPORTANT.....IMPORTANT.....IMPORTANT.....IMPORTANT.....IMPORTANT     *
+*----------------------------------------------------------------------------*
+* EXE - a program file - type in the name & press the enter key.             *
+* COM - a command file - type in the name & press the enter key.             *
+* BAT - a batch file - many uses, type in the name & press enter key.        *
+* BAS - a "BASIC" program. Needs GWBASIC or BASICA to run the program.       *
+* ARC - a archived file - needs to be unarchived, contains many files.       *
+* DQC - a compressed file - needs to be uncompressed to be readable.         *
+* DOC - A DOCUMENTATION FILE - instructions about the program - READ THIS    *
+* TXT - A DOCUMENTATION FILE - instructions about the program - READ THIS    *
+******************************************************************************
+
+     You may also see files like READ.ME or README.1ST or just README. These
+are all documentation files that will tell you about the program or how to
+work the program properly.
+
+VERY IMPORTANT:  READ DOCUMENTATION FILES FIRST BEFORE RUNNING THE PROGRAM!!!
+
+===============================================================================
+
+     To view a documentation file on your screen, use the "TYPE" command.
+With your program disk in the "A" drive enter the following command:
+     A>TYPE filename.ext  (enter) - where filename would be README.DOC
+            or whatever the filename is that you wish to view.
+     This will display the documentation to the screen.  To stop the text
+from scrolling by, press "CTRL S" (the CTRL key and "S" key at the same
+time), any other key to resume scrolling. To obtain a printout of the
+documentation simply replace the "TYPE" command with the "DOS" command
+"COPY". Turn your printer on and enter the following command:
+     A>COPY filename.ext PRN <enter> - where filename would be README.DOC or 
+                                       whatever file you wish to print.
+
+===============================================================================
+
+     An "EXE", "COM", or "BAT" file extension means that when you  
+enter the filename, the computer will do something.  For instance,
+if the filename were "POKER.EXE", or "POKER.COM, or "POKER.BAT" you would
+enter the following at the "A" prompt:
+     A>POKER  <enter> - the poker program would now come up on the screen.
+
+===============================================================================
+
+     Another type of file (a little tricky to run) is a "BASIC" file. These
+types have the "BAS" extension.  Any file with this extension must be run with
+the "BASIC" interpreter.  That simply means that you must have a copy of
+"GWBASIC.EXE" if you have a clone, or "BASICA.COM" if you have an "IBM". These
+2 files (GWBASIC & the "BAS" file) must reside together or be able to find
+each other.  An easy way to do this is to simply copy "GWBASIC.EXE" to the 
+disk that contains the "BAS" files. When both files are together &
+this disk was in the "A" drive you would enter the following command:
+     A>GWBASIC POKER  <enter> - the poker program would now be "running"
+                                & you would be playing the game.
+
+===============================================================================
+
+     Another important file is one with an "ARC" extension.  This means it is
+an archived file & contains many smaller files within it. This is done so 
+all the files will fit on to the disk(s) you received. You must extract the
+files with a special program.  The program most commonly used is called 
+"PKXARC.EXE". To extract files from a file called "TEST.ARC", enter the
+following command: 
+     A>PKXARC TEST B:   <enter> - this would extract all the files and place
+them on a disk that was in the "B" drive.  You must have a FORMATTED blank disk
+in the "B" drive when issuing this command. You could copy the "ARC" files & 
+the program "PKXARC.EXE" to your hard drive & enter the following command:
+     C>PKXARC TEST   <enter>  -  this will extract all the files from an
+                                 archived state. Then you will see some of
+                                 the different filenames mentioned above when
+                                 you use the "DIR" command.
+
+===============================================================================
+
+     Hopefully this help sheet will enable you to understand & use your disks.
+If all this still sounds like "GREEK", then we strongly suggest that you 
+purchase the following disks:
+        #257 - BEGINNERS - a tutorial on using public domain software
+        #256 - DOS TUTORIAL - an excellent program teaching about your
+                              computer & how to use "DOS" commands
+        #255 - DOS HELP - on-line help screens for "DOS" commands
+
+     If you would like individual training on your computer, our services
+can be obtained for the following rates by appointment only:
+
+        In our office - $35.00 / hour     
+
+                                                Happy computing,
+
+                                                PC PLUS CONSULTING
+                                                14536 ROSCOE BL. # 201
+                                                PANORAMA CITY, CA. 91402
+                                                (818) 891-7930
+
+
+
+
+
+     
+
+
+
+     
+

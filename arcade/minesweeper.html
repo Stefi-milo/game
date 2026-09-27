@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+<title>Minesweeper</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:#1a1a2e;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  font-family:'Courier New',monospace;
+  color:#fff;
+  padding:12px;
+}
+h2{color:#ffcc00;margin-bottom:12px;font-size:1.3em;letter-spacing:2px;}
+
+.controls{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;justify-content:center;}
+
+select,button{
+  background:#2a2a4e;border:1px solid #555;color:#fff;
+  padding:6px 12px;border-radius:4px;cursor:pointer;font-size:0.85em;
+}
+button:hover{background:#ff6b35;border-color:#ff6b35;}
+
+#flag-toggle{transition:background 0.15s, border-color 0.15s;}
+#flag-toggle.active{background:#ff6b35;border-color:#ff6b35;box-shadow:0 0 0 2px #ff6b3566;}
+
+.info{display:flex;gap:16px;margin-bottom:10px;font-size:0.85em;}
+.info span{color:#ffcc00;}
+
+#board{
+  display:inline-grid;
+  gap:2px;
+  background:#0a0a1a;
+  padding:8px;
+  border-radius:8px;
+  border:2px solid #333;
+}
+
+.cell{
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  background:#2a2a4e;border:1px solid #3a3a5e;
+  border-radius:3px;cursor:pointer;
+  font-size:0.8em;font-weight:bold;
+}
+
+.cell.revealed{background:#111;border-color:#222;}
+.cell.flagged{background:#3a2a1a;border-color:#ff6b35;}
+.cell.mine{background:#4a1a1a;}
+
+.msg{margin-top:12px;font-size:1em;}
+.win{color:#4f4;}
+.lose{color:#f44;}
+</style>
+</head>
+
+<body>
+
+<h2>💣 MINESWEEPER</h2>
+
+<div class="controls">
+  <select id="difficulty">
+    <option value="easy">Easy (9×9, 10 mines)</option>
+    <option value="medium" selected>Medium (16×16, 40 mines)</option>
+    <option value="hard">Hard (30×16, 99 mines)</option>
+  </select>
+  <button onclick="newGame()">New Game</button>
+  <button id="flag-toggle" onclick="toggleFlagMode()">🚩 Flag mode: OFF</button>
+</div>
+
+<div class="info">
+  <div>💀 <span id="deaths">0</span></div>
+  <div>💣 <span id="mine-count">0</span></div>
+  <div>⏱ <span id="timer">0</span>s</div>
+</div>
+
+<div id="board"></div>
+<div class="msg" id="msg"></div>
+
+<script>
+const CONFIGS={
+  easy:{rows:9,cols:9,mines:10},
+  medium:{rows:16,cols:16,mines:40},
+  hard:{rows:16,cols:30,mines:99}
+};
+
+let board=[],revealed=[],flagged=[];
+let cfg,gameOver=false,started=false;
+let seconds=0,timerInterval;
+let deaths=0; // session counter
+let flagMode=false;
+
+function toggleFlagMode(){
+  flagMode = !flagMode;
+  const btn = document.getElementById('flag-toggle');
+  btn.textContent = '🚩 Flag mode: ' + (flagMode ? 'ON' : 'OFF');
+  flagMode ? btn.classList.add('active') : btn.classList.remove('active');
+}
+
+function newGame(){
+  const level=document.getElementById('difficulty').value;
+  cfg=CONFIGS[level];
+
+  board=Array(cfg.rows).fill().map(()=>Array(cfg.cols).fill(0));
+  revealed=Array(cfg.rows).fill().map(()=>Array(cfg.cols).fill(false));
+  flagged=Array(cfg.rows).fill().map(()=>Array(cfg.cols).fill(false));
+
+  gameOver=false;
+  started=false;
+  seconds=0;
+  flagMode=false;
+
+  const btn = document.getElementById('flag-toggle');
+  btn.textContent = '🚩 Flag mode: OFF';
+  btn.classList.remove('active');
+
+  clearInterval(timerInterval);
+
+  document.getElementById('timer').textContent='0';
+  document.getElementById('mine-count').textContent=cfg.mines;
+  document.getElementById('msg').textContent='';
+
+  placeMines();
+  render();
+}
+
+function placeMines(){
+  let placed=0;
+  while(placed<cfg.mines){
+    const r=Math.floor(Math.random()*cfg.rows);
+    const c=Math.floor(Math.random()*cfg.cols);
+    if(board[r][c]!==-1){
+      board[r][c]=-1;
+      placed++;
+    }
+  }
+
+  for(let r=0;r<cfg.rows;r++){
+    for(let c=0;c<cfg.cols;c++){
+      if(board[r][c]===-1) continue;
+      let count=0;
+      for(let dr=-1;dr<=1;dr++){
+        for(let dc=-1;dc<=1;dc++){
+          const nr=r+dr,nc=c+dc;
+          if(nr>=0&&nr<cfg.rows&&nc>=0&&nc<cfg.cols&&board[nr][nc]===-1){
+            count++;
+          }
+        }
+      }
+      board[r][c]=count;
+    }
+  }
+}
+
+function render(){
+  const el=document.getElementById('board');
+  el.style.gridTemplateColumns=`repeat(${cfg.cols},28px)`;
+  el.innerHTML='';
+
+  for(let r=0;r<cfg.rows;r++){
+    for(let c=0;c<cfg.cols;c++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+
+      if(flagged[r][c]){
+        cell.classList.add('flagged');
+        cell.textContent='🚩';
+      }else if(revealed[r][c]){
+        cell.classList.add('revealed');
+        if(board[r][c]===-1){
+          cell.classList.add('mine');
+          cell.textContent='💥';
+        }else if(board[r][c]>0){
+          cell.textContent=board[r][c];
+        }
+      }
+
+      cell.onclick=()=>handleClick(r,c);
+      cell.oncontextmenu=(e)=>{ e.preventDefault(); doFlag(r,c); };
+      el.appendChild(cell);
+    }
+  }
+}
+
+function handleClick(r,c){
+  if(gameOver) return;
+
+  if(flagMode){ 
+    doFlag(r,c);
+    return;
+  }
+
+  if(!started){
+    started=true;
+    timerInterval=setInterval(()=>{
+      seconds++;
+      document.getElementById('timer').textContent=seconds;
+    },1000);
+  }
+
+  if(board[r][c]===-1){
+    handleDeath();
+    return;
+  }
+
+  flood(r,c);
+  render();
+  checkWin();
+}
+
+function doFlag(r,c){
+  if(gameOver||revealed[r][c]) return;
+  flagged[r][c]=!flagged[r][c];
+  render();
+}
+
+function flood(r,c){
+  if(r<0||r>=cfg.rows||c<0||c>=cfg.cols||revealed[r][c]||flagged[r][c]) return;
+  revealed[r][c]=true;
+  if(board[r][c]===0){
+    for(let dr=-1;dr<=1;dr++){
+      for(let dc=-1;dc<=1;dc++){
+        flood(r+dr,c+dc);
+      }
+    }
+  }
+}
+
+function revealAll(){
+  for(let r=0;r<cfg.rows;r++){
+    for(let c=0;c<cfg.cols;c++){
+      if(board[r][c]===-1) revealed[r][c]=true;
+    }
+  }
+  render();
+}
+
+function checkWin(){
+  let left=0;
+  for(let r=0;r<cfg.rows;r++){
+    for(let c=0;c<cfg.cols;c++){
+      if(!revealed[r][c]&&board[r][c]!==-1) left++;
+    }
+  }
+
+  if(left===0){
+    gameOver=true;
+    clearInterval(timerInterval);
+    document.getElementById('msg').innerHTML =
+      `<span class="win">🎉 You Win! ${seconds}s</span>`;
+    sendWin();
+  }
+}
+
+function handleDeath(){
+  if(gameOver) return;
+
+  gameOver=true;
+  clearInterval(timerInterval);
+
+  deaths++;
+  document.getElementById('deaths').textContent=deaths;
+
+  sendDeath();
+
+  revealAll();
+  document.getElementById('msg').innerHTML =
+    '<span class="lose">💥 BOOM! You died</span>';
+}
+
+/* ── Send events to index.html ── */
+function sendDeath(){
+  const level=document.getElementById('difficulty').value;
+  parent.postMessage({ type:'mistake', gameId:`minesweeper-${level}` }, '*');
+}
+function sendWin(){
+  const level=document.getElementById('difficulty').value;
+  parent.postMessage({ type:'win', gameId:`minesweeper-${level}` }, '*');
+}
+
+newGame();
+</script>
+
+</body>
+</html>

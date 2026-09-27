@@ -1,0 +1,151 @@
+                           PSION CHESS  -  HELP
+                      SIX PAGES OF HELP ARE AVAILABLE
+
+       Page One (this page) ......  Making a move, starting a game
+       Page Two             ......  Commands when player's turn
+       Page three           ......  Commands when computer's turn
+       Page Four            ......  Setting Up a position
+       Page Five            ......  The GAMES command
+       Page Six             ......  En Passant, Draw
+
+ MAKING A MOVE - to  make a  move, use  the  arrow  keys to place the
+       cursor on  top of the piece you wish to  move and press ENTER.
+       Then move the cursor to the destination square and press ENTER
+       again.
+
+ IF YOU CHANGE YOUR MIND  half  way through a move, return the cursor
+       to the piece you had wanted to move, and press ENTER.
+
+ CASTLING -  Move  the King two spaces to either side. If it is legal
+       to castle, the computer will move the Rook for you.
+
+ TO START A NEW GAME                  -  press $
+ TO SWITCH BETWEEN 2-D AND 3-D BOARD  -  press F2
+
+             PRESS SPACE BAR FOR NEXT PAGE OR ESC TO EXIT
+                               HELP  -  page two
+                       COMMANDS WHEN PLAYER'S TURN
+
+       To use a command - press the first letter of the word.
+
+  INVERT   ... view the board from the opposite end.
+  COMPUTE  ... asks the computer to take the next move.
+  LEVEL    ... increases   the  level  of  play  being  used  by  the
+       computer. To  decrease  the  level  of  play, press CTRL and L.
+  HINT     ... asks the computer to suggest a move
+  TAKEBACK ... takes back the last move and assumes the next  move is
+       yours.
+  REPLAY   ... replays the game from the start. Pressing ESC  returns
+       control to the player.
+  2-PLAYER ... allows game to be played by two humans.
+  SOUND    ... switches sound on or off.
+  DEMO     ... lets the computer play itself.
+  FORWARD  ... steps forward a move after moves have been taken back.
+  PRINT    ... prints  moves as  they are  made. To  print the  whole
+       board press CTRL and P. The printer port of your computer must
+       previously  have  been set up using  a utility  that will have
+       been supplied with your computer.
+  NEXT-BEST... forces the computer to play its last move again.
+
+             PRESS SPACE BAR FOR NEXT PAGE OR ESC TO EXIT
+                              HELP  -  page three
+                       COMMANDS WHEN PLAYER'S TURN (contd.)
+
+  GAMES    ... see page 5
+  WAIT     ... freezes the game in  its current  state. Pressing  any
+       key allows the game to continue.
+  ANALYSIS ... switches on/off an analysis of the current position.
+  EASY     ... stops the computer thinking while it is your move.
+  QUIT     ... leave the chess program.
+
+                       COMMANDS WHEN COMPUTER'S TURN
+
+  MOVE-NOW ... forces  the computer to move  now. If computer  was in
+       DEMO mode, returns control to the player.
+  SOUND    ... switches sound on or off.
+  BEST-SO-FAR ... displays the best move so far discovered.
+  ANALYSIS ... switches on/off an analysis of the current position.
+  WAIT     ... freezes the game in  its current  state. Pressing  any
+       key allows the game to continue.
+
+  If you use  any of the features of Psion  Chess which would  not be
+  available to  a player in a championship match, (TAKEBACK etc.) the
+  word CHAMPIONSHIP on the 2-D screen disappears.
+
+             PRESS SPACE BAR FOR NEXT PAGE OR ESC TO EXIT
+                               HELP  -  page four
+                             SETTING UP A POSITION
+  Press  F3  to set up a position. The setup cursor (two small blocks
+  at the front of the square) replaces the normal cursor. To position
+  a piece simply  move the cursor to a square and type K,Q,R,B,N or P
+  to place a piece or 0 to delete it. Press C to start setting up for
+  the  other  colour.
+
+                  COMMANDS WHEN SETTING UP A POSITION
+
+  EMPTY BOARD   ... clears the board.
+  LEVEL    ... increases   the  level  of  play  being  used  by  the
+       computer. To  decrease  the  level  of  play, press CTRL and L.
+  SOUND    ... switches sound on or off.
+  INVERT   ... view the board from the oposite end.
+  ZERO CLOCKS   ... resets the clock.
+  CHANGE COLOUR ... switches  between  setting  up  white  pieces  and
+       setting up black pieces.
+
+  To leave setup  press F3 again. The game restarts with the computer
+  expecting you to move next. You cannot leave setup if the  position
+  is illegal. Castling and  En Passant capture are not allowed in the
+  first move from a set up position.
+
+             PRESS SPACE BAR FOR NEXT PAGE OR ESC TO EXIT
+                       HELP  -  page five
+                       THE GAMES COMMAND
+
+  The following sub commands are available when the  games command is
+  used.
+
+  SAVE    ... allows  you  to save the current  game.  The  extension
+       given  to  the  filename  you enter  will  always  be  ".chs".
+       Pressing the ESC key allows you to abort this command.
+  LOAD    ... allows you to load a previously saved game.
+  DIRECTORY ... lists all saved games.
+  MASTER-GAMES ... allows you to run the selection of 50 famous games
+       which comes with your Psion Chess disk. When the game has been
+       loaded, using  the REPLAY command will display the games  from
+       the start. FORWARD and TAKEBACK can also be used to advance or
+       go back one  move at a time. You can take over the game at any
+       stage, or  you can get the  computer to take over the game  by
+       using the DEMO command.
+
+
+
+
+
+
+             PRESS SPACE BAR FOR NEXT PAGE OR ESC TO EXIT
+                       HELP  -  page six
+                 THE EN PASSANT RULE AND DRAWS
+
+  EN PASSANT 
+     
+  Psion Chess recognises  En Passant capture and  will use  it itself.
+  En Passant  capture can  only occur when a player moves a  pawn two
+  squares  forward to  avoid  capture by  the  opponent's  pawn.  The
+  opponent can capture the pawn just as if it had only been moved one
+  square instead of  two. The option to capture the  pawn en  passant
+  must be exercised immediately, before playing any other move, or it
+  lapses.
+
+
+  DRAW
+
+  A draw is declared if stalemate occurs, if a  position  is repeated
+  three times, or if no pawn is moved and no piece is taken during 50
+  consecutive moves.
+
+
+
+
+
+             PRESS SPACE TO RETURN TO FIRST PAGE, ESC TO EXIT
+

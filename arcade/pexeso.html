@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕹️</text></svg>">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pexeso</title>
+
+<style>
+:root {
+  --bg:#0d1117;
+  --panel:#161b27;
+  --border:#2a2f3e;
+  --accent:#ff6b35;
+  --gold:#f0a500;
+  --text:#e0e0e0;
+  --muted:#888;
+  --card-back:#1e2530;
+  --card-front:#1a2540;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Courier New',monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:10px;
+}
+
+/* SMALLER BOARD */
+.board{
+  display:grid;
+  gap:6px;
+  width:100%;
+  max-width:480px; /* smaller so everything fits */
+}
+
+.board.size-4{grid-template-columns:repeat(4,1fr);}
+.board.size-6{grid-template-columns:repeat(4,1fr);}
+.board.size-8{grid-template-columns:repeat(4,1fr);}
+
+@media (min-width:480px){
+  .board.size-6{grid-template-columns:repeat(6,1fr);}
+  .board.size-8{grid-template-columns:repeat(8,1fr);}
+}
+
+/* CARDS SMALLER */
+.card{aspect-ratio:1;perspective:600px;cursor:pointer;}
+
+.card-inner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform 0.3s;
+  border-radius:8px;
+}
+
+.card.flipped .card-inner,
+.card.matched .card-inner{
+  transform:rotateY(180deg);
+}
+
+.card-face{
+  position:absolute;
+  inset:0;
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(0.9rem,4vw,1.6rem); /* smaller icons */
+  backface-visibility:hidden;
+}
+
+.card-back-face{
+  background:var(--card-back);
+  border:1px solid var(--border);
+}
+.card-back-face::after{
+  content:'🥋';
+  opacity:0.2;
+}
+
+.card-front-face{
+  background:var(--card-front);
+  transform:rotateY(180deg);
+}
+
+.card.matched .card-front-face{
+  background:#152e1a;
+  border:1px solid #2d6e3a;
+}
+
+/* STATS */
+.stats{
+  margin:10px 0;
+  font-size:0.7rem;
+}
+.stats span{color:var(--gold);}
+
+/* BUTTON */
+.btn{
+  background:#222;
+  color:white;
+  border:none;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* OVERLAY */
+.overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.9);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:15px;
+}
+.overlay.show{display:flex;}
+</style>
+</head>
+
+<body>
+
+<h2>PEXESO</h2>
+
+<div class="stats">
+  MISTAKES: <span id="mistakes">0</span>
+  &nbsp; PAIRS: <span id="pairs">0</span> / <span id="total">0</span>
+  &nbsp; TIME: <span id="timer">0s</span>
+</div>
+
+<div>
+  <button class="btn" onclick="setSize(4)">4x4</button>
+  <button class="btn" onclick="setSize(6)">6x6</button>
+  <button class="btn" onclick="setSize(8)">8x8</button>
+  <button class="btn" onclick="restart()">↺</button>
+</div>
+
+<div class="board size-4" id="board"></div>
+
+<div class="overlay" id="overlay">
+  <h2>🏆 WIN</h2>
+  <p id="result-text"></p>
+  <button class="btn" onclick="restart()">Play Again</button>
+</div>
+
+<script>
+const SYMBOLS=['🥋','🥊','👊','🦵','🙏','🤜','🤛','🧘','⛩️','🎽','🏅','🎌'];
+
+let gridSize=4;
+let flipped=[];
+let matched=0;
+let mistakes=0;
+let locked=false;
+let seconds=0;
+let timer;
+
+/* SIZE */
+function setSize(n){
+  gridSize=n;
+  restart();
+}
+
+/* RESTART */
+function restart(){
+  clearInterval(timer);
+  seconds=0;
+  mistakes=0;
+  matched=0;
+  flipped=[];
+  locked=false;
+
+  updateStats();
+  buildBoard();
+
+  document.getElementById('overlay').classList.remove('show');
+
+  timer=setInterval(()=>{
+    seconds++;
+    document.getElementById('timer').textContent=seconds+'s';
+  },1000);
+}
+
+/* BOARD */
+function buildBoard(){
+  const count=gridSize*gridSize;
+  const pairs=count/2;
+
+  const symbols=shuffle([...SYMBOLS]).slice(0,pairs);
+  const deck=shuffle([...symbols,...symbols]);
+
+  document.getElementById('total').textContent=pairs;
+
+  const board=document.getElementById('board');
+  board.className='board size-'+gridSize;
+  board.innerHTML='';
+
+  deck.forEach(sym=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.dataset.symbol=sym;
+
+    card.innerHTML=`
+      <div class="card-inner">
+        <div class="card-face card-back-face"></div>
+        <div class="card-face card-front-face">${sym}</div>
+      </div>`;
+
+    card.onclick=onCardClick;
+    board.appendChild(card);
+  });
+}
+
+/* CLICK */
+function onCardClick(e){
+  const card=e.currentTarget;
+
+  if(locked || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+  card.classList.add('flipped');
+  flipped.push(card);
+
+  if(flipped.length===2){
+    locked=true;
+
+    const [a,b]=flipped;
+
+    if(a.dataset.symbol===b.dataset.symbol){
+      setTimeout(()=>{
+        a.classList.add('matched');
+        b.classList.add('matched');
+        a.classList.remove('flipped');
+        b.classList.remove('flipped');
+
+        matched++;
+        flipped=[];
+        locked=false;
+
+        updateStats();
+
+        if(matched==document.getElementById('total').textContent){
+          clearInterval(timer);
+          document.getElementById('result-text').textContent=
+            `Mistakes: ${mistakes}, Time: ${seconds}s`;
+
+          setTimeout(()=>{
+            document.getElementById('overlay').classList.add('show');
+          },300);
+        }
+
+      },400);
+    }else{
+      // ❌ THIS IS THE IMPORTANT PART
+      mistakes++;
+
+      // send to main app
+      parent.postMessage({ type:'mistake' }, '*');
+
+      updateStats();
+
+      setTimeout(()=>{
+        a.classList.remove('flipped');
+        b.classList.remove('flipped');
+        flipped=[];
+        locked=false;
+      },700);
+    }
+  }
+}
+
+/* UI */
+function updateStats(){
+  document.getElementById('mistakes').textContent=mistakes;
+  document.getElementById('pairs').textContent=matched;
+}
+
+/* UTIL */
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
+
+restart();
+</script>
+
+</body>
+</html>
